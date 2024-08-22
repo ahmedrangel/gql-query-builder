@@ -5,10 +5,10 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com:atulmy/gql-query-builder.git"
+    "url": "git+https://github.com:ahmedrangel/gql-query-builder.git"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -24,12 +24,16 @@
     "builder",
     "javascript"
   ],
-  "author": "Atul Yadav <atul.12788@gmail.com>",
+  "author": {
+    "name": "Ahmed Rangel",
+    "email": "ahmedrangel@outlook.com",
+    "url": "https://ahmedrangel.com/"
+  },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/atulmy/gql-query-builder/issues"
+    "url": "https://github.com/ahmedrangel/gql-query-builder/issues"
   },
-  "homepage": "https://github.com/atulmy/gql-query-builder",
+  "homepage": "https://github.com/ahmedrangel/gql-query-builder",
   "devDependencies": {
     "@stylistic/eslint-plugin": "^2.6.4",
     "@types/jest": "^29.5.12",
