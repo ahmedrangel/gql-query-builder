@@ -1,4 +1,4 @@
-import { Fields, IQueryBuilderOptions, NestedField, VariableOptions } from "../types";
+import type { Fields, IQueryBuilderOptions, NestedField, VariableOptions } from "../types";
 
 /*
 Defines an array of strings or objects to define query fields
@@ -108,7 +108,7 @@ export const operationOrAlias = (
 };
 
 export const isFragment = (field: NestedField): boolean => {
-  return field?.fragment === true ?? false;
+  return field?.fragment === true || false;
 };
 
 export const operationOrFragment = (field: NestedField): string => {

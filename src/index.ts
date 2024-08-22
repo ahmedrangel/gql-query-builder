@@ -2,13 +2,14 @@ import adapters from "./adapters";
 import DefaultMutationAdapter from "./adapters/DefaultMutationAdapter";
 import DefaultQueryAdapter from "./adapters/DefaultQueryAdapter";
 import DefaultSubscriptionAdapter from "./adapters/DefaultSubscriptionAdapter";
-import { IMutationAdapter, IQueryAdapter, IQueryBuilderOptions, ISubscriptionAdapter } from "./types";
+import type { IMutationAdapter, IQueryAdapter, IQueryBuilderOptions, ISubscriptionAdapter } from "./types";
 
-function queryOperation (
+export const { DefaultAppSyncQueryAdapter, DefaultAppSyncMutationAdapter } = adapters;
+export const gqlQuery = (
   options: IQueryBuilderOptions | IQueryBuilderOptions[],
   adapter?: any,
   config?: any
-) {
+) => {
   let defaultAdapter: IQueryAdapter;
   if (Array.isArray(options)) {
     if (adapter) {
@@ -24,13 +25,13 @@ function queryOperation (
   }
   defaultAdapter = new DefaultQueryAdapter(options, config);
   return defaultAdapter.queryBuilder();
-}
+};
 
-function mutationOperation (
+export const gqlMutation = (
   options: IQueryBuilderOptions | IQueryBuilderOptions[],
   adapter?: IMutationAdapter,
   config?: any
-) {
+) => {
   let customAdapter: IMutationAdapter;
   let defaultAdapter: IMutationAdapter;
   if (Array.isArray(options)) {
@@ -49,12 +50,12 @@ function mutationOperation (
   }
   defaultAdapter = new DefaultMutationAdapter(options, config);
   return defaultAdapter.mutationBuilder();
-}
+};
 
-function subscriptionOperation (
+export const gqlSubscription = (
   options: IQueryBuilderOptions | IQueryBuilderOptions[],
   adapter?: ISubscriptionAdapter
-) {
+) => {
   let customAdapter: ISubscriptionAdapter;
   let defaultAdapter: ISubscriptionAdapter;
   if (Array.isArray(options)) {
@@ -73,11 +74,4 @@ function subscriptionOperation (
   }
   defaultAdapter = new DefaultSubscriptionAdapter(options);
   return defaultAdapter.subscriptionBuilder();
-}
-
-export {
-  subscriptionOperation as subscription,
-  mutationOperation as mutation,
-  queryOperation as query,
-  adapters
 };
