@@ -16,22 +16,12 @@ A simple helper function to generate GraphQL queries using plain JavaScript Obje
 
 ## Usage
 
-```typescript
-import * as gql from 'gql-query-builder'
+```ts
+import { gqlQuery, gqlMutation, gqlSubscription } from 'gql-query-builder'
 
-const query = gql.query(options: object)
-const mutation = gql.mutation(options: object)
-const subscription = gql.subscription(options: object)
-```
-
-You can also import `query` or `mutation` or `subscription` individually:
-
-```typescript
-import  { query, mutation, subscription } from 'gql-query-builder'
-
-query(options: object)
-mutation(options: object)
-subscription(options: object)
+const query = gqlQuery(options: object)
+const mutation = gqlMutation(options: object)
+const subscription = gqlSubscription(options: object)
 ```
 
 ### Options
@@ -104,16 +94,14 @@ subscription(options: object)
 
 ### Adapter
 
-An optional second argument `adapter` is a typescript/javascript class that implements `src/adapters/IQueryAdapter` or `src/adapters/IMutationAdapter`.
+An optional second argument `adapter` is a typescript/javascript class that implements `IQueryAdapter`, `IMutationAdapter` or `ISubscriptionAdapter`.
 
 If adapter is undefined then `src/adapters/DefaultQueryAdapter` or `src/adapters/DefaultMutationAdapter` is used.
 
-```
-import * as gql from 'gql-query-builder'
+```ts
+import { gqlQuery } as gql from 'gql-query-builder'
 
-const query = gql.query(options: object, adapter?: MyCustomQueryAdapter,config?: object)
-const mutation = gql.mutation(options: object, adapter?: MyCustomQueryAdapter)
-const subscription = gql.subscription(options: object, adapter?: MyCustomSubscriptionAdapter)
+const query = gqlQuery(options: object, adapter?: MyCustomQueryAdapter,config?: object)
 ```
 
 ### Config
@@ -141,6 +129,19 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
       getThoughts, createThought
     </td>
   </tr>
+    <tr>
+    <td>fragment</td>
+    <td>Reusable named fragment fields to be sent to the server</td>
+    <td>Array</td>
+    <td>No</td>
+    <td>
+      [{
+        name: "NamedFragment",
+        on: "User",
+        fields: ["grade"]
+      }]
+    </td>
+  </tr>
   </tbody>
 </table>
 
@@ -166,10 +167,10 @@ const subscription = gql.subscription(options: object, adapter?: MyCustomSubscri
 
 #### Query:
 
-```javascript
-import * as gql from 'gql-query-builder'
+```js
+import { gqlQuery } from 'gql-query-builder'
 
-const query = gql.query({
+const query = gqlQuery({
   operation: 'thoughts',
   fields: ['id', 'name', 'thought']
 })
@@ -179,8 +180,8 @@ console.log(query)
 // Output
 query {
   thoughts {
-    id,
-    name,
+    id
+    name
     thought
   }
 }
@@ -190,10 +191,10 @@ query {
 
 #### Query (with variables):
 
-```javascript
-import * as gql from 'gql-query-builder'
+```js
+import { gqlQuery } from 'gql-query-builder'
 
-const query = gql.query({
+const query = gqlQuery({
   operation: 'thought',
   variables: { id: 1 },
   fields: ['id', 'name', 'thought']
@@ -204,7 +205,9 @@ console.log(query)
 // Output
 query ($id: Int) {
   thought (id: $id) {
-    id, name, thought
+    id
+    name
+    thought
   }
 }
 
@@ -216,10 +219,10 @@ query ($id: Int) {
 
 #### Query (with nested fields selection):
 
-```javascript
-import * as gql from 'gql-query-builder'
+```js
+import { gqlQuery } from 'gql-query-builder'
 
-const query = gql({
+const query = gqlQuery({
   operation: 'orders',
   fields: [
     'id',
@@ -245,14 +248,14 @@ console.log(query)
 // Output
 query {
   orders  {
-    id,
-    amount,
+    id
+    amount
     user {
-      id,
-      name,
-      email,
+      id
+      name
+      email
       address {
-        city,
+        city
         country
       }
     }
@@ -264,10 +267,10 @@ query {
 
 #### Query (with required variables):
 
-```javascript
-import * as gql from 'gql-query-builder'
+```js
+import { gqlQuery } from 'gql-query-builder'
 
-const query = gql.query({
+const query = gqlQuery({
   operation: 'userLogin',
   variables: {
     email: { value: 'jon.doe@example.com', required: true },
@@ -281,7 +284,8 @@ console.log(query)
 // Output
 query ($email: String!, $password: String!) {
   userLogin (email: $email, password: $password) {
-    userId, token
+    userId
+    token
   }
 }
 
@@ -296,10 +300,10 @@ query ($email: String!, $password: String!) {
 
 #### Query (with custom argument name):
 
-```javascript
-import * as gql from 'gql-query-builder'
+```js
+import { gqlQuery } from 'gql-query-builder'
 
-const query = gql.query([{
+const query = gqlQuery([{
   operation: "someoperation",
   fields: [{
     operation: "nestedoperation",
@@ -343,10 +347,10 @@ query($id2: ID, $id1: ID) {
 
 #### Query (with operation name):
 
-```javascript
-import * as gql from 'gql-query-builder'
+```js
+import { gqlQuery } from 'gql-query-builder'
 
-const query = gql.query({
+const query = gqlQuery({
   operation: 'userLogin',
   fields: ['userId', 'token']
 }, null, {
@@ -368,10 +372,10 @@ query someoperation {
 
 #### Query (with empty fields):
 
-```javascript
-import * as gql from 'gql-query-builder'
+```js
+import { gqlQuery } from 'gql-query-builder'
 
-const query = gql.query([{
+const query = gqlQuery([{
   operation: "getFilteredUsersCount",
 },
   {
@@ -400,10 +404,10 @@ query {
 
 #### Query (with alias):
 
-```javascript
-import * as gql from 'gql-query-builder'
+```js
+import { gqlQuery } from 'gql-query-builder'
 
-const query = gql.query({
+const query = gqlQuery({
   operation: {
     name: 'thoughts',
     alias: 'myThoughts',
@@ -416,8 +420,8 @@ console.log(query)
 // Output
 query {
   myThoughts: thoughts {
-    id,
-    name,
+    id
+    name
     thought
   }
 }
@@ -427,19 +431,19 @@ query {
 
 #### Query (with inline fragment):
 
-```javascript
-import * as gql from 'gql-query-builder'
+```js
+import { gqlQuery } from 'gql-query-builder'
 
-const query = gql.query({
+const query = gqlQuery({
     operation: "thought",
     fields: [
         "id",
         "name",
         "thought",
         {
-            operation: "FragmentType",
-            fields: ["emotion"],
-            fragment: true,
+          operation: "FragmentType",
+          fields: ["emotion"],
+          fragment: true,
         },
     ],
 });
@@ -449,11 +453,11 @@ console.log(query)
 // Output
 query {
     thought {
-        id,
-        name,
-        thought,
+        id
+        name
+        thought
         ... on FragmentType {
-            emotion
+          emotion
         }
     }
 }
@@ -465,11 +469,11 @@ query {
 
 For example, to inject `SomethingIDidInMyAdapter` in the `operationWrapperTemplate` method.
 
-```javascript
-import * as gql from 'gql-query-builder'
+```js
+import { gqlQuery } from 'gql-query-builder'
 import MyQueryAdapter from 'where/adapters/live/MyQueryAdapter'
 
-const query = gql.query({
+const query = gqlQuery({
   operation: 'thoughts',
   fields: ['id', 'name', 'thought']
 }, MyQueryAdapter)
@@ -479,8 +483,8 @@ console.log(query)
 // Output
 query SomethingIDidInMyAdapter {
   thoughts {
-    id,
-    name,
+    id
+    name
     thought
   }
 }
@@ -492,10 +496,10 @@ Take a peek at [DefaultQueryAdapter](src/adapters/DefaultQueryAdapter.ts) to get
 
 #### Mutation:
 
-```javascript
-import * as gql from 'gql-query-builder'
+```js
+import { gqlMutation } from 'gql-query-builder'
 
-const query = gql.mutation({
+const query = gqlMutation({
   operation: 'thoughtCreate',
   variables: {
     name: 'Tyrion Lannister',
@@ -524,10 +528,10 @@ mutation ($name: String, $thought: String) {
 
 #### Mutation (with required variables):
 
-```javascript
-import * as gql from 'gql-query-builder'
+```js
+import { gqlMutation } from 'gql-query-builder'
 
-const query = gql.mutation({
+const query = gqlMutation({
   operation: 'userSignup',
   variables: {
     name: { value: 'Jon Doe' },
@@ -558,10 +562,10 @@ mutation ($name: String, $email: String!, $password: String!) {
 
 #### Mutation (with custom types):
 
-```javascript
-import * as gql from 'gql-query-builder'
+```js
+import { gqlMutation } from 'gql-query-builder'
 
-const query = gql.mutation({
+const query = gqlMutation({
   operation: "userPhoneNumber",
   variables: {
     phone: {
@@ -596,11 +600,11 @@ mutation ($phone: PhoneNumber!) {
 
 For example, to inject `SomethingIDidInMyAdapter` in the `operationWrapperTemplate` method.
 
-```javascript
-import * as gql from 'gql-query-builder'
+```js
+import { gqlMutation } from 'gql-query-builder'
 import MyMutationAdapter from 'where/adapters/live/MyQueryAdapter'
 
-const query = gql.mutation({
+const query = gqlMutation({
   operation: 'thoughts',
   fields: ['id', 'name', 'thought']
 }, MyMutationAdapter)
@@ -610,8 +614,8 @@ console.log(query)
 // Output
 mutation SomethingIDidInMyAdapter {
   thoughts {
-    id,
-    name,
+    id
+    name
     thought
   }
 }
@@ -623,10 +627,10 @@ Take a peek at [DefaultMutationAdapter](src/adapters/DefaultMutationAdapter.ts) 
 
 #### Mutation (with operation name):
 
-```javascript
-import * as gql from 'gql-query-builder'
+```js
+import { gqlMutation } from 'gql-query-builder'
 
-const query = gql.mutation({
+const query = gqlMutation({
   operation: 'thoughts',
   fields: ['id', 'name', 'thought']
 }, undefined, {
@@ -649,15 +653,15 @@ mutation someoperation {
 
 #### Subscription:
 
-```javascript
+```js
 import axios from "axios";
-import { subscription } from "gql-query-builder";
+import { gqlSubscription } from 'gql-query-builder'
 
 async function saveThought() {
   try {
     const response = await axios.post(
       "http://api.example.com/graphql",
-      subscription({
+      gqlSubscription({
         operation: "thoughtCreate",
         variables: {
           name: "Tyrion Lannister",
@@ -680,11 +684,11 @@ async function saveThought() {
 
 For example, to inject `SomethingIDidInMyAdapter` in the `operationWrapperTemplate` method.
 
-```javascript
-import * as gql from 'gql-query-builder'
+```js
+import { gqlSubscription } from 'gql-query-builder'
 import MySubscriptionAdapter from 'where/adapters/live/MyQueryAdapter'
 
-const query = gql.subscription({
+const query = gqlSubscription({
   operation: 'thoughts',
   fields: ['id', 'name', 'thought']
 }, MySubscriptionAdapter)
@@ -709,15 +713,15 @@ Take a peek at [DefaultSubscriptionAdapter](src/adapters/DefaultSubscriptionAdap
 
 **Query:**
 
-```javascript
+```js
 import axios from "axios";
-import { query } from "gql-query-builder";
+import { gqlQuery } from 'gql-query-builder'
 
 async function getThoughts() {
   try {
     const response = await axios.post(
       "http://api.example.com/graphql",
-      query({
+      gqlQuery({
         operation: "thoughts",
         fields: ["id", "name", "thought"],
       })
@@ -734,15 +738,15 @@ async function getThoughts() {
 
 **Mutation:**
 
-```javascript
+```js
 import axios from "axios";
-import { mutation } from "gql-query-builder";
+import { gqlMutation } from 'gql-query-builder'
 
 async function saveThought() {
   try {
     const response = await axios.post(
       "http://api.example.com/graphql",
-      mutation({
+      gqlMutation({
         operation: "thoughtCreate",
         variables: {
           name: "Tyrion Lannister",
@@ -760,44 +764,3 @@ async function saveThought() {
 ```
 
 [↑ all examples](#examples)
-
-# Showcase
-
-Following projects are using [gql-query-builder](https://github.com/atulmy/gql-query-builder)
-
-- Crate - Get monthly subscription of trendy clothes and accessories - [GitHub](https://github.com/atulmy/crate)
-- Fullstack GraphQL Application - [GitHub](https://github.com/atulmy/fullstack-graphql)
-- Would really appreciate if you add your project to this list by sending a PR
-
-## Author
-
-- Atul Yadav - [GitHub](https://github.com/atulmy) · [Twitter](https://twitter.com/atulmy)
-
-## Contributors
-
-**If you are interested in actively maintaining / enhancing this project, get in <a href="mailto:atul.12788@gmail.com">touch</a>.**
-
-- Juho Vepsäläinen - [GitHub](https://github.com/bebraw) · [Twitter](https://twitter.com/bebraw)
-- Daniel Hreben - [GitHub](https://github.com/DanielHreben) · [Twitter](https://twitter.com/DanielHreben)
-- Todd Baur - [GitHub](https://github.com/toadkicker) · [Twitter](https://twitter.com/toadkicker)
-- Alireza Hariri - [GitHub](https://github.com/ARHariri)
-- Cédric - [GitHub](https://github.com/cbonaudo)
-- Clayton Collie - [GitHub](https://github.com/ccollie)
-- Devon Reid - [GitHub](https://github.com/Devorein)
-- Harry Brundage - [GitHub](https://github.com/airhorns) · [Twitter](https://twitter.com/harrybrundage)
-- Clément Berard - [GitHub](https://github.com/clement-berard) · [Twitter](https://twitter.com/clementberard)
-- Lee Rose - [GitHub](https://github.com/leeroyrose)
-- Christian Westgaard - [GitHub](https://github.com/ComLock)
-- [YOUR NAME HERE] - Feel free to contribute to the codebase by resolving any open issues, refactoring, adding new features, writing test cases or any other way to make the project better and helpful to the community. Feel free to fork and send pull requests.
-
-## Donate
-
-If you liked this project, you can donate to support it ❤️
-
-[![Donate via PayPal](https://raw.githubusercontent.com/atulmy/atulmy.github.io/master/images/mix/paypal-me-smaller.png)](http://paypal.me/atulmy)
-
-## License
-
-Copyright (c) 2018 Atul Yadav <http://github.com/atulmy>
-
-The MIT License (<http://www.opensource.org/licenses/mit-license.php>)
