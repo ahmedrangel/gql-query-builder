@@ -2,17 +2,18 @@
   "name": "gql-query-builder",
   "version": "3.8.0",
   "description": "Simple GraphQL Query Builder",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com:atulmy/gql-query-builder.git"
   },
-  "main": "./build/index.js",
-  "types": "./build/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
-    "build/**/*"
+    "dist"
   ],
   "scripts": {
-    "build": "shx rm -rf ./dist/* && tsc",
+    "build": "shx rm -rf ./dist/* && tsup src/index.ts --format esm --dts --config tsconfig.json",
     "lint": "eslint --fix --config .config/eslint.mjs",
     "test": "jest --config",
     "playground": "node playground/index.js"
@@ -32,11 +33,13 @@
   "devDependencies": {
     "@stylistic/eslint-plugin": "^2.6.4",
     "@types/jest": "^29.5.12",
+    "@types/node": "^22.5.0",
     "@typescript-eslint/parser": "^8.2.0",
     "eslint": "^9.9.0",
     "jest": "29.7.0",
     "shx": "^0.3.4",
     "ts-jest": "^29.2.4",
+    "tsup": "^8.2.4",
     "typescript": "^5.5.4"
   },
   "jest": {
