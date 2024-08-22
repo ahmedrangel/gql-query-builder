@@ -1,21 +1,21 @@
 import DefaultAppSyncQueryAdapter from "../src/adapters/DefaultAppSyncQueryAdapter";
-import * as queryBuilder from "./";
+import { gqlQuery, gqlMutation, gqlSubscription } from "./";
 
 describe("Query", () => {
   test.only("generates query", () => {
-    const query = queryBuilder.query({
+    const query = gqlQuery({
       operation: "thoughts",
       fields: ["id", "name", "thought"]
     });
 
     expect(query).toEqual({
-      query: "query { thoughts { id, name, thought } }",
+      query: "query { thoughts { id name thought } }",
       variables: {}
     });
   });
 
   test.only("generates query with alias", () => {
-    const query = queryBuilder.query({
+    const query = gqlQuery({
       operation: {
         name: "thoughts",
         alias: "myThoughts"
@@ -24,13 +24,13 @@ describe("Query", () => {
     });
 
     expect(query).toEqual({
-      query: "query { myThoughts: thoughts { id, name, thought } }",
+      query: "query { myThoughts: thoughts { id name thought } }",
       variables: {}
     });
   });
 
   test.only("generates queries with the same operation with different alias", () => {
-    const query = queryBuilder.query([
+    const query = gqlQuery([
       {
         operation: {
           name: "thoughts",
@@ -48,13 +48,13 @@ describe("Query", () => {
     ]);
 
     expect(query).toEqual({
-      query: "query { myThoughts: thoughts { id, name, thought } yourThoughts: thoughts { id, name, thought } }",
+      query: "query { myThoughts: thoughts { id name thought } yourThoughts: thoughts { id name thought } }",
       variables: {}
     });
   });
 
   test.only("generates query when adapter argument is provided", () => {
-    const query = queryBuilder.query(
+    const query = gqlQuery(
       {
         operation: "thoughts",
         fields: ["id", "name", "thought"]
@@ -63,13 +63,13 @@ describe("Query", () => {
     );
 
     expect(query).toEqual({
-      query: "query Thoughts { thoughts { nodes { id, name, thought } } }",
+      query: "query Thoughts { thoughts { nodes { id name thought } } }",
       variables: {}
     });
   });
 
   test.only("generates query when adapter and alias arguments are provided", () => {
-    const query = queryBuilder.query(
+    const query = gqlQuery(
       {
         operation: {
           name: "thoughts",
@@ -81,39 +81,39 @@ describe("Query", () => {
     );
 
     expect(query).toEqual({
-      query: "query Thoughts { myThoughts: thoughts { nodes { id, name, thought } } }",
+      query: "query Thoughts { myThoughts: thoughts { nodes { id name thought } } }",
       variables: {}
     });
   });
 
   test.only("generate query with undefined variables", () => {
-    const query = queryBuilder.query({
+    const query = gqlQuery({
       operation: "user",
       fields: ["id", "name", "email"],
       variables: { id: { type: "Int" }, name: undefined }
     });
 
     expect(query).toEqual({
-      query: "query ($id: Int, $name: String) { user (id: $id, name: $name) { id, name, email } }",
+      query: "query ($id: Int, $name: String) { user (id: $id, name: $name) { id name email } }",
       variables: { id: undefined, name: undefined }
     });
   });
 
   test.only("generates query with variables", () => {
-    const query = queryBuilder.query({
+    const query = gqlQuery({
       operation: "thought",
       variables: { id: 1 },
       fields: ["id", "name", "thought"]
     });
 
     expect(query).toEqual({
-      query: "query ($id: Int) { thought (id: $id) { id, name, thought } }",
+      query: "query ($id: Int) { thought (id: $id) { id name thought } }",
       variables: { id: 1 }
     });
   });
 
   test.only("generates query with sub fields selection", () => {
-    const query = queryBuilder.query({
+    const query = gqlQuery({
       operation: "orders",
       fields: [
         "id",
@@ -135,13 +135,13 @@ describe("Query", () => {
     });
 
     expect(query).toEqual({
-      query: "query { orders { id, amount, user { id, name, email, address { city, country }, account { holder } } } }",
+      query: "query { orders { id amount user { id name email address { city country } account { holder } } } }",
       variables: {}
     });
   });
 
   test.only("generates query with multiple sub fields selection in same object", () => {
-    const query = queryBuilder.query({
+    const query = gqlQuery({
       operation: "orders",
       fields: [
         "id",
@@ -161,13 +161,13 @@ describe("Query", () => {
     });
 
     expect(query).toEqual({
-      query: "query { orders { id, amount, user { id, name, email, address { city, country }, account { holder } } } }",
+      query: "query { orders { id amount user { id name email address { city country } account { holder } } } }",
       variables: {}
     });
   });
 
   test.only("generates query with required variables", () => {
-    const query = queryBuilder.query({
+    const query = gqlQuery({
       operation: "userLogin",
       variables: {
         email: { value: "jon.doe@example.com", required: true },
@@ -177,13 +177,13 @@ describe("Query", () => {
     });
 
     expect(query).toEqual({
-      query: "query ($email: String!, $password: String!) { userLogin (email: $email, password: $password) { userId, token } }",
+      query: "query ($email: String!, $password: String!) { userLogin (email: $email, password: $password) { userId token } }",
       variables: { email: "jon.doe@example.com", password: "123456" }
     });
   });
 
   test.only("generate query with array variable (array items are not nullable)", () => {
-    const query = queryBuilder.query({
+    const query = gqlQuery({
       operation: "search",
       variables: {
         tags: { value: ["a", "b", "c"], list: [true], type: "String" }
@@ -192,13 +192,13 @@ describe("Query", () => {
     });
 
     expect(query).toEqual({
-      query: "query ($tags: [String!]) { search (tags: $tags) { id, title, content, tag } }",
+      query: "query ($tags: [String!]) { search (tags: $tags) { id title content tag } }",
       variables: { tags: ["a", "b", "c"] }
     });
   });
 
   test.only("generate query with array variable (array items are nullable)", () => {
-    const query = queryBuilder.query({
+    const query = gqlQuery({
       operation: "search",
       variables: {
         tags: { value: ["a", "b", "c", null], list: true }
@@ -207,13 +207,13 @@ describe("Query", () => {
     });
 
     expect(query).toEqual({
-      query: "query ($tags: [String]) { search (tags: $tags) { id, title, content, tag } }",
+      query: "query ($tags: [String]) { search (tags: $tags) { id title content tag } }",
       variables: { tags: ["a", "b", "c", null] }
     });
   });
 
   test.only("generates multiple queries", () => {
-    const query = queryBuilder.query([
+    const query = gqlQuery([
       {
         operation: "thoughts",
         fields: ["id", "name", "thought"]
@@ -225,13 +225,13 @@ describe("Query", () => {
     ]);
 
     expect(query).toEqual({
-      query: "query { thoughts { id, name, thought } prayers { id, name, prayer } }",
+      query: "query { thoughts { id name thought } prayers { id name prayer } }",
       variables: {}
     });
   });
 
   test.only("generates query with variables nested in fields", () => {
-    const query = queryBuilder.query([
+    const query = gqlQuery([
       {
         operation: "getPublicationNames",
         fields: [
@@ -245,13 +245,13 @@ describe("Query", () => {
     ]);
 
     expect(query).toEqual({
-      query: "query ($id: ID) { getPublicationNames { publication (id: $id) { id, name } } }",
+      query: "query ($id: ID) { getPublicationNames { publication (id: $id) { id name } } }",
       variables: { id: 12 }
     });
   });
 
   test.only("generates query with nested variables in nested fields", () => {
-    const query = queryBuilder.query([
+    const query = gqlQuery([
       {
         operation: "getPublicationNames",
         fields: [
@@ -331,7 +331,7 @@ describe("Query", () => {
     ]);
 
     expect(query).toEqual({
-      query: "query ($id: ID, $visible: Boolean, $platformLimit: Int, $idChannel: Int!, $channelLimit: Int, $rightsLimit: Int, $rightsOffset: Int, $userLimit: Int, $userFilter: String) { getPublicationNames { publication (id: $id) { id, name, platforms (visible: $visible, limit: $platformLimit) { totalCount, edges { label, code, parentId, id, rights (idChannel: $idChannel, limit: $rightsLimit, offset: $rightsOffset) { id, label, users (limit: $userLimit, filters: $userFilter) { id, name } } }, subField, channels (id: $idChannel, limit: $channelLimit) { id, label } } } } }",
+      query: "query ($id: ID, $visible: Boolean, $platformLimit: Int, $idChannel: Int!, $channelLimit: Int, $rightsLimit: Int, $rightsOffset: Int, $userLimit: Int, $userFilter: String) { getPublicationNames { publication (id: $id) { id name platforms (visible: $visible, limit: $platformLimit) { totalCount edges { label code parentId id rights (idChannel: $idChannel, limit: $rightsLimit, offset: $rightsOffset) { id label users (limit: $userLimit, filters: $userFilter) { id name } } } subField channels (id: $idChannel, limit: $channelLimit) { id label } } } } }",
       variables: {
         id: 12,
         visible: true,
@@ -347,7 +347,7 @@ describe("Query", () => {
   });
 
   test.only("generates query with object variables nested in fields", () => {
-    const query = queryBuilder.query([
+    const query = gqlQuery([
       {
         operation: "getPublicationNames",
         variables: { id: { type: "ID", value: 12 } },
@@ -367,7 +367,7 @@ describe("Query", () => {
     ]);
 
     expect(query).toEqual({
-      query: "query ($input: FilterInput, $id: ID) { getPublicationNames (id: $id) { publication (input: $input) { name, publishedAt } } }",
+      query: "query ($input: FilterInput, $id: ID) { getPublicationNames (id: $id) { publication (input: $input) { name publishedAt } } }",
       variables: {
         id: 12,
         input: { type: "news", tz: "EST" }
@@ -376,7 +376,7 @@ describe("Query", () => {
   });
 
   test.only("generates query without extraneous brackets for operation with no fields", () => {
-    const query = queryBuilder.query({
+    const query = gqlQuery({
       operation: "getFilteredUsersCount"
     });
 
@@ -387,7 +387,7 @@ describe("Query", () => {
   });
 
   test.only("generates queries without extraneous brackets for operations with no fields", () => {
-    const query = queryBuilder.query([
+    const query = gqlQuery([
       {
         operation: "getFilteredUsersCount"
       },
@@ -403,7 +403,7 @@ describe("Query", () => {
   });
 
   test.only("generates query without extraneous brackets for operations with empty fields", () => {
-    const query = queryBuilder.query({
+    const query = gqlQuery({
       operation: "getFilteredUsersCount",
       fields: []
     });
@@ -415,7 +415,7 @@ describe("Query", () => {
   });
 
   test.only("generates queries without extraneous brackets for operations with empty fields", () => {
-    const query = queryBuilder.query([
+    const query = gqlQuery([
       {
         operation: "getFilteredUsersCount",
         fields: []
@@ -433,7 +433,7 @@ describe("Query", () => {
   });
 
   test.only("generates query without extraneous brackets for operation with empty fields of fields", () => {
-    const query = queryBuilder.query({
+    const query = gqlQuery({
       operation: "getFilteredUsers",
       fields: [
         {
@@ -449,7 +449,7 @@ describe("Query", () => {
   });
 
   test.only("generates queries without extraneous brackets for operations with empty fields of fields", () => {
-    const query = queryBuilder.query([
+    const query = gqlQuery([
       {
         operation: "getFilteredUsers",
         fields: [
@@ -475,7 +475,7 @@ describe("Query", () => {
   });
 
   test.only("generates query without extraneous brackets for operation with nested operation empty fields", () => {
-    const query = queryBuilder.query({
+    const query = gqlQuery({
       operation: "getFilteredUsers",
       fields: [
         {
@@ -493,7 +493,7 @@ describe("Query", () => {
   });
 
   test.only("generates queries without extraneous brackets for operations with nested operation empty fields", () => {
-    const query = queryBuilder.query([
+    const query = gqlQuery([
       {
         operation: "getFilteredUsers",
         fields: [
@@ -523,7 +523,7 @@ describe("Query", () => {
   });
 
   test.only("generates queries with object variables for multiple queries", () => {
-    const query = queryBuilder.query([
+    const query = gqlQuery([
       {
         operation: "getPublicationData",
         variables: { id: { type: "ID", value: 12 } },
@@ -546,7 +546,7 @@ describe("Query", () => {
   });
 
   test.only("generates queries with object variables for multiple queries with nested variables", () => {
-    const query = queryBuilder.query([
+    const query = gqlQuery([
       {
         operation: "getPublicationData",
         variables: { id: { type: "ID", value: 12 } },
@@ -567,7 +567,7 @@ describe("Query", () => {
     ]);
 
     expect(query).toEqual({
-      query: "query ($id: ID, $location: String, $name: String) { getPublicationData (id: $id) { publishedAt, publicationOrg (location: $location) { name } } getPublicationUsers (name: $name) { full_name } }",
+      query: "query ($id: ID, $location: String, $name: String) { getPublicationData (id: $id) { publishedAt publicationOrg (location: $location) { name } } getPublicationUsers (name: $name) { full_name } }",
       variables: {
         id: 12,
         location: "mars",
@@ -577,7 +577,7 @@ describe("Query", () => {
   });
 
   test.only("generates query with operation name", () => {
-    const query = queryBuilder.query(
+    const query = gqlQuery(
       [
         {
           operation: "getPublicationNames",
@@ -592,7 +592,7 @@ describe("Query", () => {
     );
 
     expect(query).toEqual({
-      query: "query operation ($id: ID) { getPublicationNames (id: $id) { name, publishedAt } }",
+      query: "query operation ($id: ID) { getPublicationNames (id: $id) { name publishedAt } }",
       variables: {
         id: 12
       }
@@ -600,7 +600,7 @@ describe("Query", () => {
   });
 
   test.only("generates query arguments different from variable name", () => {
-    const query = queryBuilder.query([
+    const query = gqlQuery([
       {
         operation: "someoperation",
         fields: [
@@ -636,28 +636,54 @@ describe("Query", () => {
   });
 
   test.only("generates query arguments with inline fragment", () => {
-    const query = queryBuilder.query({
+    const query = gqlQuery({
       operation: "thought",
       fields: [
         "id",
         "name",
         "thought",
         {
-          operation: "FragmentType",
+          operation: "InlineFragmentType",
           fields: ["grade"],
-          fragment: true
+          inlineFragment: true
         }
       ]
     });
 
     expect(query).toEqual({
-      query: "query { thought { id, name, thought, ... on FragmentType { grade } } }",
+      query: "query { thought { id name thought ... on InlineFragmentType { grade } } }",
+      variables: {}
+    });
+  });
+
+  test.only("generates query arguments with named fragment", () => {
+    const query = gqlQuery({
+      operation: "thought",
+      fields: [
+        "id",
+        "name",
+        "thought",
+        {
+          operation: "NamedFragment",
+          namedFragment: true
+        }
+      ]
+    }, null, {
+      fragment: [{
+        name: "NamedFragment",
+        on: "User",
+        fields: ["grade"]
+      }]
+    });
+
+    expect(query).toEqual({
+      query: "query { thought { id name thought ...NamedFragment } } fragment NamedFragment on User { grade }",
       variables: {}
     });
   });
 
   test.only("generates aliased nested queries", () => {
-    const query = queryBuilder.query([
+    const query = gqlQuery([
       {
         operation: "singleRootQuery",
         variables: {},
@@ -679,7 +705,7 @@ describe("Query", () => {
       }
     ]); // query
     expect(query).toEqual({
-      query: "query { singleRootQuery { nestedQuery { whatever }, duplicatedNestedQuery: nestedQuery { whatever } } }",
+      query: "query { singleRootQuery { nestedQuery { whatever } duplicatedNestedQuery: nestedQuery { whatever } } }",
       variables: {}
     }); // expect
   }); // test
@@ -687,7 +713,7 @@ describe("Query", () => {
 
 describe("Mutation", () => {
   test.only("generates mutation query", () => {
-    const query = queryBuilder.mutation({
+    const query = gqlMutation({
       operation: "thoughtCreate",
       variables: {
         name: "Tyrion Lannister",
@@ -706,7 +732,7 @@ describe("Mutation", () => {
   });
 
   test.only("generates mutation query with alias", () => {
-    const query = queryBuilder.mutation({
+    const query = gqlMutation({
       operation: {
         name: "thoughtCreate",
         alias: "myThoughtCreate"
@@ -728,7 +754,7 @@ describe("Mutation", () => {
   });
 
   test.only("generates mutations with the same operation with different alias", () => {
-    const query = queryBuilder.mutation([
+    const query = gqlMutation([
       {
         operation: {
           name: "thoughtCreate",
@@ -765,7 +791,7 @@ describe("Mutation", () => {
   });
 
   test.only("generates mutation query with required variables", () => {
-    const query = queryBuilder.mutation({
+    const query = gqlMutation({
       operation: "userSignup",
       variables: {
         name: "Jon Doe",
@@ -786,7 +812,7 @@ describe("Mutation", () => {
   });
 
   test.only("generates multiple mutations", () => {
-    const query = queryBuilder.mutation([
+    const query = gqlMutation([
       {
         operation: "thoughtCreate",
         variables: {
@@ -816,7 +842,7 @@ describe("Mutation", () => {
   });
 
   test.only("generates multiple mutations with named variables", () => {
-    const query = queryBuilder.mutation([
+    const query = gqlMutation([
       {
         operation: "delete0: deleteUser",
         variables: {
@@ -851,7 +877,7 @@ describe("Mutation", () => {
   });
 
   test.only("generates mutation with required variables", () => {
-    const query = queryBuilder.mutation({
+    const query = gqlMutation({
       operation: "userSignup",
       variables: {
         name: "Jon Doe",
@@ -872,7 +898,7 @@ describe("Mutation", () => {
   });
 
   test.only("generates mutation custom type", () => {
-    const query = queryBuilder.mutation({
+    const query = gqlMutation({
       operation: "userPhoneNumber",
       variables: {
         phone: {
@@ -893,7 +919,7 @@ describe("Mutation", () => {
   });
 
   test.only("generate mutation without fields selection", () => {
-    const query = queryBuilder.mutation({
+    const query = gqlMutation({
       operation: "logout"
     });
 
@@ -904,7 +930,7 @@ describe("Mutation", () => {
   });
 
   test.only("generates nested mutation operations without variables", () => {
-    const query = queryBuilder.mutation({
+    const query = gqlMutation({
       operation: "namespaceField",
       fields: [
         {
@@ -922,7 +948,7 @@ describe("Mutation", () => {
   });
 
   test.only("generates nested mutation operations with variables", () => {
-    const query = queryBuilder.mutation({
+    const query = gqlMutation({
       operation: "namespaceField",
       fields: [
         {
@@ -942,7 +968,7 @@ describe("Mutation", () => {
   });
 
   test.only("generates multiple nested mutation operations with variables", () => {
-    const query = queryBuilder.mutation([
+    const query = gqlMutation([
       {
         operation: "namespaceField",
         fields: [
@@ -976,7 +1002,7 @@ describe("Mutation", () => {
   });
 
   test.only("generates mutation with operation name", () => {
-    const query = queryBuilder.mutation(
+    const query = gqlMutation(
       [
         {
           operation: "thoughtCreate",
@@ -1005,7 +1031,7 @@ describe("Mutation", () => {
 
 describe("Subscriptions", () => {
   test.only("generates subscriptions", () => {
-    const query = queryBuilder.subscription([
+    const query = gqlSubscription([
       {
         operation: "thoughtCreate",
         variables: {
@@ -1035,7 +1061,7 @@ describe("Subscriptions", () => {
   });
 
   test.only("generates subscriptions with query alias", () => {
-    const query = queryBuilder.subscription([
+    const query = gqlSubscription([
       {
         operation: {
           name: "thoughtCreate",
@@ -1071,7 +1097,7 @@ describe("Subscriptions", () => {
   });
 
   test.only("generates subscription with required variables", () => {
-    const query = queryBuilder.subscription({
+    const query = gqlSubscription({
       operation: "userSignup",
       variables: {
         name: "Jon Doe",
@@ -1092,7 +1118,7 @@ describe("Subscriptions", () => {
   });
 
   test.only("generates subscription custom type", () => {
-    const query = queryBuilder.subscription({
+    const query = gqlSubscription({
       operation: "userPhoneNumber",
       variables: {
         phone: {
