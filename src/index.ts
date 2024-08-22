@@ -2,12 +2,9 @@ import adapters from "./adapters";
 import DefaultMutationAdapter from "./adapters/DefaultMutationAdapter";
 import DefaultQueryAdapter from "./adapters/DefaultQueryAdapter";
 import DefaultSubscriptionAdapter from "./adapters/DefaultSubscriptionAdapter";
-import IMutationAdapter from "./adapters/IMutationAdapter";
-import IQueryAdapter from "./adapters/IQueryAdapter";
-import ISubscriptionAdapter from "./adapters/ISubscriptionAdapter";
-import IQueryBuilderOptions from "./IQueryBuilderOptions";
+import { IMutationAdapter, IQueryAdapter, IQueryBuilderOptions, ISubscriptionAdapter } from "./types";
 
-function queryOperation(
+function queryOperation (
   options: IQueryBuilderOptions | IQueryBuilderOptions[],
   adapter?: any,
   config?: any
@@ -29,7 +26,7 @@ function queryOperation(
   return defaultAdapter.queryBuilder();
 }
 
-function mutationOperation(
+function mutationOperation (
   options: IQueryBuilderOptions | IQueryBuilderOptions[],
   adapter?: IMutationAdapter,
   config?: any
@@ -54,7 +51,7 @@ function mutationOperation(
   return defaultAdapter.mutationBuilder();
 }
 
-function subscriptionOperation(
+function subscriptionOperation (
   options: IQueryBuilderOptions | IQueryBuilderOptions[],
   adapter?: ISubscriptionAdapter
 ) {
@@ -82,5 +79,5 @@ export {
   subscriptionOperation as subscription,
   mutationOperation as mutation,
   queryOperation as query,
-  adapters,
+  adapters
 };

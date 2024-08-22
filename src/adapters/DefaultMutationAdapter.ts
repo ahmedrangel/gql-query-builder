@@ -3,11 +3,9 @@
 @desc A basic implementation to use
 @desc modify the output of the mutation template by passing a second argument to mutation(options, AdapterClass)
  */
-import Fields from "../Fields";
-import IQueryBuilderOptions, { IOperation } from "../IQueryBuilderOptions";
-import OperationType from "../OperationType";
-import Utils from "../Utils";
-import IMutationAdapter from "./IMutationAdapter";
+import type { IQueryBuilderOptions, IOperation, Fields, IMutationAdapter } from "../types";
+import { OperationType } from "../enums";
+import { getNestedVariables, queryDataNameAndArgumentMap, queryDataType, queryFieldsMap, queryVariablesMap, resolveVariables } from "../utils/helpers";
 
 export default class DefaultMutationAdapter implements IMutationAdapter {
   private variables: any | undefined;
@@ -15,13 +13,14 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
   private operation!: string | IOperation;
   private config: { [key: string]: unknown };
 
-  constructor(
+  constructor (
     options: IQueryBuilderOptions | IQueryBuilderOptions[],
     configuration?: { [key: string]: unknown }
   ) {
     if (Array.isArray(options)) {
-      this.variables = Utils.resolveVariables(options);
-    } else {
+      this.variables = resolveVariables(options);
+    }
+    else {
       this.variables = options.variables;
       this.fields = options.fields;
       this.operation = options.operation;
@@ -29,7 +28,7 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
 
     // Default configs
     this.config = {
-      operationName: "",
+      operationName: ""
     };
     if (configuration) {
       Object.entries(configuration).forEach(([key, value]) => {
@@ -38,7 +37,7 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
     }
   }
 
-  public mutationBuilder() {
+  public mutationBuilder () {
     return this.operationWrapperTemplate(
       OperationType.Mutation,
       this.variables,
@@ -46,7 +45,7 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
     );
   }
 
-  public mutationsBuilder(mutations: IQueryBuilderOptions[]) {
+  public mutationsBuilder (mutations: IQueryBuilderOptions[]) {
     const content = mutations.map((opts) => {
       this.operation = opts.operation;
       this.variables = opts.variables;
@@ -55,31 +54,29 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
     });
     return this.operationWrapperTemplate(
       OperationType.Mutation,
-      Utils.resolveVariables(mutations),
+      resolveVariables(mutations),
       content.join("\n  ")
     );
   }
 
-  private queryDataArgumentAndTypeMap(variablesUsed: any): string {
+  private queryDataArgumentAndTypeMap (variablesUsed: any): string {
     if (this.fields && typeof this.fields === "object") {
       variablesUsed = {
-        ...Utils.getNestedVariables(this.fields),
-        ...variablesUsed,
+        ...getNestedVariables(this.fields),
+        ...variablesUsed
       };
     }
-    return variablesUsed && Object.keys(variablesUsed).length > 0
-      ? `(${Object.keys(variablesUsed).reduce(
-          (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}$${key}: ${Utils.queryDataType(
-              variablesUsed[key]
-            )}`,
-          ""
-        )})`
-      : "";
+    return variablesUsed && Object.keys(variablesUsed).length > 0? `(${Object.keys(variablesUsed).reduce(
+      (dataString, key, i) =>
+        `${dataString}${i !== 0 ? ", " : ""}$${key}: ${queryDataType(
+          variablesUsed[key]
+        )}`,
+      ""
+    )})`: "";
   }
 
   // start of mutation building
-  private operationWrapperTemplate(
+  private operationWrapperTemplate (
     type: OperationType,
     variables: any,
     content: string
@@ -97,24 +94,20 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
 
     return {
       query,
-      variables: Utils.queryVariablesMap(variables, this.fields),
+      variables: queryVariablesMap(variables, this.fields)
     };
   }
 
-  private operationTemplate(operation: string | IOperation) {
+  private operationTemplate (operation: string | IOperation) {
     const operationName =
-      typeof operation === "string"
-        ? operation
-        : `${operation.alias}: ${operation.name}`;
+      typeof operation === "string"? operation: `${operation.alias}: ${operation.name}`;
 
-    return `${operationName} ${Utils.queryDataNameAndArgumentMap(
+    return `${operationName} ${queryDataNameAndArgumentMap(
       this.variables
     )} ${
-      this.fields && this.fields.length > 0
-        ? `{
-    ${Utils.queryFieldsMap(this.fields)}
-  }`
-        : ""
+      this.fields && this.fields.length > 0? `{
+    ${queryFieldsMap(this.fields)}
+  }`: ""
     }`;
   }
 }

@@ -3,12 +3,9 @@
 @desc A basic implementation to use
 @desc modify the output of the query template by passing a second argument to query(options, AdapterClass)
  */
-import Fields from "../Fields";
-import IQueryBuilderOptions, { IOperation } from "../IQueryBuilderOptions";
-import OperationType from "../OperationType";
-import Utils from "../Utils";
-import IQueryAdapter from "./IQueryAdapter";
-import VariableOptions from "../VariableOptions";
+import type { VariableOptions, IQueryBuilderOptions, IOperation, Fields, IQueryAdapter } from "../types";
+import { OperationType } from "../enums";
+import { getNestedVariables, queryDataNameAndArgumentMap, queryDataType, queryFieldsMap, queryVariablesMap, resolveVariables } from "../utils/helpers";
 
 export default class DefaultQueryAdapter implements IQueryAdapter {
   private variables!: any | undefined;
@@ -16,13 +13,13 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
   private operation!: string | IOperation;
   private config: { [key: string]: unknown };
 
-  constructor(
+  constructor (
     options: IQueryBuilderOptions | IQueryBuilderOptions[],
     configuration?: { [key: string]: unknown }
   ) {
     // Default configs
     this.config = {
-      operationName: "",
+      operationName: ""
     };
     if (configuration) {
       Object.entries(configuration).forEach(([key, value]) => {
@@ -31,21 +28,22 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
     }
 
     if (Array.isArray(options)) {
-      this.variables = Utils.resolveVariables(options);
-    } else {
+      this.variables = resolveVariables(options);
+    }
+    else {
       this.variables = options.variables;
       this.fields = options.fields || [];
       this.operation = options.operation;
     }
   }
   // kicks off building for a single query
-  public queryBuilder() {
+  public queryBuilder () {
     return this.operationWrapperTemplate(
       this.operationTemplate(this.variables)
     );
   }
   // if we have an array of options, call this
-  public queriesBuilder(queries: IQueryBuilderOptions[]) {
+  public queriesBuilder (queries: IQueryBuilderOptions[]) {
     const content = () => {
       const tmpl: string[] = [];
       queries.forEach((query) => {
@@ -61,27 +59,25 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
   }
 
   // Convert object to argument and type map. eg: ($id: Int)
-  private queryDataArgumentAndTypeMap(): string {
+  private queryDataArgumentAndTypeMap (): string {
     let variablesUsed: { [key: string]: unknown } = this.variables;
 
     if (this.fields && typeof this.fields === "object") {
       variablesUsed = {
-        ...Utils.getNestedVariables(this.fields),
-        ...variablesUsed,
+        ...getNestedVariables(this.fields),
+        ...variablesUsed
       };
     }
-    return variablesUsed && Object.keys(variablesUsed).length > 0
-      ? `(${Object.keys(variablesUsed).reduce(
-          (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}$${key}: ${Utils.queryDataType(
-              variablesUsed[key]
-            )}`,
-          ""
-        )})`
-      : "";
+    return variablesUsed && Object.keys(variablesUsed).length > 0? `(${Object.keys(variablesUsed).reduce(
+      (dataString, key, i) =>
+        `${dataString}${i !== 0 ? ", " : ""}$${key}: ${queryDataType(
+          variablesUsed[key]
+        )}`,
+      ""
+    )})`: "";
   }
 
-  private operationWrapperTemplate(content: string): {
+  private operationWrapperTemplate (content: string): {
     variables: { [p: string]: unknown };
     query: string;
   } {
@@ -96,22 +92,18 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
     );
     return {
       query,
-      variables: Utils.queryVariablesMap(this.variables, this.fields),
+      variables: queryVariablesMap(this.variables, this.fields)
     };
   }
   // query
-  private operationTemplate(variables: VariableOptions | undefined) {
+  private operationTemplate (variables: VariableOptions | undefined) {
     const operation =
-      typeof this.operation === "string"
-        ? this.operation
-        : `${this.operation.alias}: ${this.operation.name}`;
+      typeof this.operation === "string"? this.operation: `${this.operation.alias}: ${this.operation.name}`;
 
     return `${operation} ${
-      variables ? Utils.queryDataNameAndArgumentMap(variables) : ""
+      variables ? queryDataNameAndArgumentMap(variables) : ""
     } ${
-      this.fields && this.fields.length > 0
-        ? "{ " + Utils.queryFieldsMap(this.fields) + " }"
-        : ""
+      this.fields && this.fields.length > 0? "{ " + queryFieldsMap(this.fields) + " }": ""
     }`;
   }
 }

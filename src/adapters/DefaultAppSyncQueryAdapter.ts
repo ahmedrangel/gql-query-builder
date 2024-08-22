@@ -3,32 +3,31 @@
 @desc A basic implementation to use with AWS AppSync
 @desc modify the output of the query template by passing a second argument to query(options, DefaultAppSyncQueryAdapter)
  */
-import Fields from "../Fields";
-import IQueryBuilderOptions, { IOperation } from "../IQueryBuilderOptions";
-import OperationType from "../OperationType";
-import Utils from "../Utils";
-import IQueryAdapter from "./IQueryAdapter";
+import type { IQueryBuilderOptions, IOperation, Fields, IQueryAdapter } from "../types";
+import { OperationType } from "../enums";
+import { resolveVariables, queryVariablesMap, queryFieldsMap } from "../utils/helpers";
 
 export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
   private variables!: any | undefined;
   private fields: Fields | undefined;
   private operation!: string | IOperation;
 
-  constructor(options: IQueryBuilderOptions | IQueryBuilderOptions[]) {
+  constructor (options: IQueryBuilderOptions | IQueryBuilderOptions[]) {
     if (Array.isArray(options)) {
-      this.variables = Utils.resolveVariables(options);
-    } else {
+      this.variables = resolveVariables(options);
+    }
+    else {
       this.variables = options.variables;
       this.fields = options.fields || [];
       this.operation = options.operation;
     }
   }
   // kicks off building for a single query
-  public queryBuilder() {
+  public queryBuilder () {
     return this.operationWrapperTemplate(this.operationTemplate());
   }
   // if we have an array of options, call this
-  public queriesBuilder(queries: IQueryBuilderOptions[]) {
+  public queriesBuilder (queries: IQueryBuilderOptions[]) {
     const content = () => {
       const tmpl: string[] = [];
       queries.forEach((query) => {
@@ -45,27 +44,23 @@ export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
   }
 
   // Convert object to name and argument map. eg: (id: $id)
-  public queryDataNameAndArgumentMap() {
-    return this.variables && Object.keys(this.variables).length
-      ? `(${Object.keys(this.variables).reduce(
-          (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}${key}: $${key}`,
-          ""
-        )})`
-      : "";
+  public queryDataNameAndArgumentMap () {
+    return this.variables && Object.keys(this.variables).length? `(${Object.keys(this.variables).reduce(
+      (dataString, key, i) =>
+        `${dataString}${i !== 0 ? ", " : ""}${key}: $${key}`,
+      ""
+    )})`: "";
   }
 
   // Convert object to argument and type map. eg: ($id: Int)
-  private queryDataArgumentAndTypeMap(): string {
-    return this.variables && Object.keys(this.variables).length
-      ? `(${Object.keys(this.variables).reduce(
-          (dataString, key, i) =>
-            `${dataString}${i !== 0 ? ", " : ""}$${key}: ${this.queryDataType(
-              this.variables[key]
-            )}`,
-          ""
-        )})`
-      : "";
+  private queryDataArgumentAndTypeMap (): string {
+    return this.variables && Object.keys(this.variables).length? `(${Object.keys(this.variables).reduce(
+      (dataString, key, i) =>
+        `${dataString}${i !== 0 ? ", " : ""}$${key}: ${this.queryDataType(
+          this.variables[key]
+        )}`,
+      ""
+    )})`: "";
   }
 
   private queryDataType = (variable: any) => {
@@ -75,7 +70,8 @@ export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
 
     if (variable.type !== undefined) {
       type = variable.type;
-    } else {
+    }
+    else {
       switch (typeof value) {
         case "object":
           type = "Object";
@@ -98,7 +94,7 @@ export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
     return type;
   };
 
-  private operationWrapperTemplate(content: string): {
+  private operationWrapperTemplate (content: string): {
     variables: { [p: string]: unknown };
     query: string;
   } {
@@ -111,18 +107,14 @@ export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
         .toUpperCase()}${operation.slice(
         1
       )} ${this.queryDataArgumentAndTypeMap()} { ${content} }`,
-      variables: Utils.queryVariablesMap(this.variables),
+      variables: queryVariablesMap(this.variables)
     };
   }
   // query
-  private operationTemplate() {
+  private operationTemplate () {
     const operation =
-      typeof this.operation === "string"
-        ? this.operation
-        : `${this.operation.alias}: ${this.operation.name}`;
+      typeof this.operation === "string"? this.operation: `${this.operation.alias}: ${this.operation.name}`;
 
-    return `${operation} ${this.queryDataNameAndArgumentMap()} { nodes { ${Utils.queryFieldsMap(
-      this.fields
-    )} } }`;
+    return `${operation} ${this.queryDataNameAndArgumentMap()} { nodes { ${queryFieldsMap(this.fields)} } }`;
   }
 }
