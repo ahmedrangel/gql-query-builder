@@ -2,19 +2,19 @@ import DefaultAppSyncQueryAdapter from "../src/adapters/DefaultAppSyncQueryAdapt
 import * as queryBuilder from "./";
 
 describe("Query", () => {
-  test("generates query", () => {
+  test.only("generates query", () => {
     const query = queryBuilder.query({
       operation: "thoughts",
       fields: ["id", "name", "thought"]
     });
 
     expect(query).toEqual({
-      query: "query  { thoughts  { id, name, thought } }",
+      query: "query { thoughts { id, name, thought } }",
       variables: {}
     });
   });
 
-  test("generates query with alias", () => {
+  test.only("generates query with alias", () => {
     const query = queryBuilder.query({
       operation: {
         name: "thoughts",
@@ -24,12 +24,12 @@ describe("Query", () => {
     });
 
     expect(query).toEqual({
-      query: "query  { myThoughts: thoughts  { id, name, thought } }",
+      query: "query { myThoughts: thoughts { id, name, thought } }",
       variables: {}
     });
   });
 
-  test("generates queries with the same operation with different alias", () => {
+  test.only("generates queries with the same operation with different alias", () => {
     const query = queryBuilder.query([
       {
         operation: {
@@ -48,12 +48,12 @@ describe("Query", () => {
     ]);
 
     expect(query).toEqual({
-      query: "query  { myThoughts: thoughts  { id, name, thought } yourThoughts: thoughts  { id, name, thought } }",
+      query: "query { myThoughts: thoughts { id, name, thought } yourThoughts: thoughts { id, name, thought } }",
       variables: {}
     });
   });
 
-  test("generates query when adapter argument is provided", () => {
+  test.only("generates query when adapter argument is provided", () => {
     const query = queryBuilder.query(
       {
         operation: "thoughts",
@@ -63,12 +63,12 @@ describe("Query", () => {
     );
 
     expect(query).toEqual({
-      query: "query Thoughts  { thoughts  { nodes { id, name, thought } } }",
+      query: "query Thoughts { thoughts { nodes { id, name, thought } } }",
       variables: {}
     });
   });
 
-  test("generates query when adapter and alias arguments are provided", () => {
+  test.only("generates query when adapter and alias arguments are provided", () => {
     const query = queryBuilder.query(
       {
         operation: {
@@ -81,12 +81,12 @@ describe("Query", () => {
     );
 
     expect(query).toEqual({
-      query: "query Thoughts  { myThoughts: thoughts  { nodes { id, name, thought } } }",
+      query: "query Thoughts { myThoughts: thoughts { nodes { id, name, thought } } }",
       variables: {}
     });
   });
 
-  test("generate query with undefined variables", () => {
+  test.only("generate query with undefined variables", () => {
     const query = queryBuilder.query({
       operation: "user",
       fields: ["id", "name", "email"],
@@ -99,7 +99,7 @@ describe("Query", () => {
     });
   });
 
-  test("generates query with variables", () => {
+  test.only("generates query with variables", () => {
     const query = queryBuilder.query({
       operation: "thought",
       variables: { id: 1 },
@@ -112,7 +112,7 @@ describe("Query", () => {
     });
   });
 
-  test("generates query with sub fields selection", () => {
+  test.only("generates query with sub fields selection", () => {
     const query = queryBuilder.query({
       operation: "orders",
       fields: [
@@ -135,12 +135,12 @@ describe("Query", () => {
     });
 
     expect(query).toEqual({
-      query: "query  { orders  { id, amount, user { id, name, email, address { city, country }, account { holder } } } }",
+      query: "query { orders { id, amount, user { id, name, email, address { city, country }, account { holder } } } }",
       variables: {}
     });
   });
 
-  test("generates query with multiple sub fields selection in same object", () => {
+  test.only("generates query with multiple sub fields selection in same object", () => {
     const query = queryBuilder.query({
       operation: "orders",
       fields: [
@@ -161,12 +161,12 @@ describe("Query", () => {
     });
 
     expect(query).toEqual({
-      query: "query  { orders  { id, amount, user { id, name, email, address { city, country }, account { holder } } } }",
+      query: "query { orders { id, amount, user { id, name, email, address { city, country }, account { holder } } } }",
       variables: {}
     });
   });
 
-  test("generates query with required variables", () => {
+  test.only("generates query with required variables", () => {
     const query = queryBuilder.query({
       operation: "userLogin",
       variables: {
@@ -182,7 +182,7 @@ describe("Query", () => {
     });
   });
 
-  test("generate query with array variable (array items are not nullable)", () => {
+  test.only("generate query with array variable (array items are not nullable)", () => {
     const query = queryBuilder.query({
       operation: "search",
       variables: {
@@ -197,7 +197,7 @@ describe("Query", () => {
     });
   });
 
-  test("generate query with array variable (array items are nullable)", () => {
+  test.only("generate query with array variable (array items are nullable)", () => {
     const query = queryBuilder.query({
       operation: "search",
       variables: {
@@ -212,7 +212,7 @@ describe("Query", () => {
     });
   });
 
-  test("generates multiple queries", () => {
+  test.only("generates multiple queries", () => {
     const query = queryBuilder.query([
       {
         operation: "thoughts",
@@ -225,12 +225,12 @@ describe("Query", () => {
     ]);
 
     expect(query).toEqual({
-      query: "query  { thoughts  { id, name, thought } prayers  { id, name, prayer } }",
+      query: "query { thoughts { id, name, thought } prayers { id, name, prayer } }",
       variables: {}
     });
   });
 
-  test("generates query with variables nested in fields", () => {
+  test.only("generates query with variables nested in fields", () => {
     const query = queryBuilder.query([
       {
         operation: "getPublicationNames",
@@ -245,12 +245,12 @@ describe("Query", () => {
     ]);
 
     expect(query).toEqual({
-      query: "query ($id: ID) { getPublicationNames  { publication (id: $id) { id, name } } }",
+      query: "query ($id: ID) { getPublicationNames { publication (id: $id) { id, name } } }",
       variables: { id: 12 }
     });
   });
 
-  test("generates query with nested variables in nested fields", () => {
+  test.only("generates query with nested variables in nested fields", () => {
     const query = queryBuilder.query([
       {
         operation: "getPublicationNames",
@@ -331,7 +331,7 @@ describe("Query", () => {
     ]);
 
     expect(query).toEqual({
-      query: "query ($id: ID, $visible: Boolean, $platformLimit: Int, $idChannel: Int!, $channelLimit: Int, $rightsLimit: Int, $rightsOffset: Int, $userLimit: Int, $userFilter: String) { getPublicationNames  { publication (id: $id) { id, name, platforms (visible: $visible, limit: $platformLimit) { totalCount, edges { label, code, parentId, id, rights (idChannel: $idChannel, limit: $rightsLimit, offset: $rightsOffset) { id, label, users (limit: $userLimit, filters: $userFilter) { id, name } } }, subField, channels (id: $idChannel, limit: $channelLimit) { id, label } } } } }",
+      query: "query ($id: ID, $visible: Boolean, $platformLimit: Int, $idChannel: Int!, $channelLimit: Int, $rightsLimit: Int, $rightsOffset: Int, $userLimit: Int, $userFilter: String) { getPublicationNames { publication (id: $id) { id, name, platforms (visible: $visible, limit: $platformLimit) { totalCount, edges { label, code, parentId, id, rights (idChannel: $idChannel, limit: $rightsLimit, offset: $rightsOffset) { id, label, users (limit: $userLimit, filters: $userFilter) { id, name } } }, subField, channels (id: $idChannel, limit: $channelLimit) { id, label } } } } }",
       variables: {
         id: 12,
         visible: true,
@@ -346,7 +346,7 @@ describe("Query", () => {
     });
   });
 
-  test("generates query with object variables nested in fields", () => {
+  test.only("generates query with object variables nested in fields", () => {
     const query = queryBuilder.query([
       {
         operation: "getPublicationNames",
@@ -375,18 +375,18 @@ describe("Query", () => {
     });
   });
 
-  test("generates query without extraneous brackets for operation with no fields", () => {
+  test.only("generates query without extraneous brackets for operation with no fields", () => {
     const query = queryBuilder.query({
       operation: "getFilteredUsersCount"
     });
 
     expect(query).toEqual({
-      query: "query  { getFilteredUsersCount   }",
+      query: "query { getFilteredUsersCount }",
       variables: {}
     });
   });
 
-  test("generates queries without extraneous brackets for operations with no fields", () => {
+  test.only("generates queries without extraneous brackets for operations with no fields", () => {
     const query = queryBuilder.query([
       {
         operation: "getFilteredUsersCount"
@@ -397,24 +397,24 @@ describe("Query", () => {
     ]);
 
     expect(query).toEqual({
-      query: "query  { getFilteredUsersCount   getAllUsersCount   }",
+      query: "query { getFilteredUsersCount getAllUsersCount }",
       variables: {}
     });
   });
 
-  test("generates query without extraneous brackets for operations with empty fields", () => {
+  test.only("generates query without extraneous brackets for operations with empty fields", () => {
     const query = queryBuilder.query({
       operation: "getFilteredUsersCount",
       fields: []
     });
 
     expect(query).toEqual({
-      query: "query  { getFilteredUsersCount   }",
+      query: "query { getFilteredUsersCount }",
       variables: {}
     });
   });
 
-  test("generates queries without extraneous brackets for operations with empty fields", () => {
+  test.only("generates queries without extraneous brackets for operations with empty fields", () => {
     const query = queryBuilder.query([
       {
         operation: "getFilteredUsersCount",
@@ -427,12 +427,12 @@ describe("Query", () => {
     ]);
 
     expect(query).toEqual({
-      query: "query  { getFilteredUsersCount   getAllUsersCount   }",
+      query: "query { getFilteredUsersCount getAllUsersCount }",
       variables: {}
     });
   });
 
-  test("generates query without extraneous brackets for operation with empty fields of fields", () => {
+  test.only("generates query without extraneous brackets for operation with empty fields of fields", () => {
     const query = queryBuilder.query({
       operation: "getFilteredUsers",
       fields: [
@@ -443,12 +443,12 @@ describe("Query", () => {
     });
 
     expect(query).toEqual({
-      query: "query  { getFilteredUsers  { count  } }",
+      query: "query { getFilteredUsers { count } }",
       variables: {}
     });
   });
 
-  test("generates queries without extraneous brackets for operations with empty fields of fields", () => {
+  test.only("generates queries without extraneous brackets for operations with empty fields of fields", () => {
     const query = queryBuilder.query([
       {
         operation: "getFilteredUsers",
@@ -469,12 +469,12 @@ describe("Query", () => {
     ]);
 
     expect(query).toEqual({
-      query: "query  { getFilteredUsers  { count  } getFilteredPosts  { count  } }",
+      query: "query { getFilteredUsers { count } getFilteredPosts { count } }",
       variables: {}
     });
   });
 
-  test("generates query without extraneous brackets for operation with nested operation empty fields", () => {
+  test.only("generates query without extraneous brackets for operation with nested operation empty fields", () => {
     const query = queryBuilder.query({
       operation: "getFilteredUsers",
       fields: [
@@ -487,12 +487,12 @@ describe("Query", () => {
     });
 
     expect(query).toEqual({
-      query: "query ($format: String) { getFilteredUsers  { average_age (format: $format)  } }",
+      query: "query ($format: String) { getFilteredUsers { average_age (format: $format) } }",
       variables: { format: "months" }
     });
   });
 
-  test("generates queries without extraneous brackets for operations with nested operation empty fields", () => {
+  test.only("generates queries without extraneous brackets for operations with nested operation empty fields", () => {
     const query = queryBuilder.query([
       {
         operation: "getFilteredUsers",
@@ -517,12 +517,12 @@ describe("Query", () => {
     ]);
 
     expect(query).toEqual({
-      query: "query  { getFilteredUsers  { average_age   } getFilteredPosts  { average_viewers   } }",
+      query: "query { getFilteredUsers { average_age } getFilteredPosts { average_viewers } }",
       variables: {}
     });
   });
 
-  test("generates queries with object variables for multiple queries", () => {
+  test.only("generates queries with object variables for multiple queries", () => {
     const query = queryBuilder.query([
       {
         operation: "getPublicationData",
@@ -545,7 +545,7 @@ describe("Query", () => {
     });
   });
 
-  test("generates queries with object variables for multiple queries with nested variables", () => {
+  test.only("generates queries with object variables for multiple queries with nested variables", () => {
     const query = queryBuilder.query([
       {
         operation: "getPublicationData",
@@ -576,7 +576,7 @@ describe("Query", () => {
     });
   });
 
-  test("generates query with operation name", () => {
+  test.only("generates query with operation name", () => {
     const query = queryBuilder.query(
       [
         {
@@ -599,7 +599,7 @@ describe("Query", () => {
     });
   });
 
-  test("generates query arguments different from variable name", () => {
+  test.only("generates query arguments different from variable name", () => {
     const query = queryBuilder.query([
       {
         operation: "someoperation",
@@ -635,7 +635,7 @@ describe("Query", () => {
     });
   });
 
-  test("generates query arguments with inline fragment", () => {
+  test.only("generates query arguments with inline fragment", () => {
     const query = queryBuilder.query({
       operation: "thought",
       fields: [
@@ -651,12 +651,12 @@ describe("Query", () => {
     });
 
     expect(query).toEqual({
-      query: "query  { thought  { id, name, thought, ... on FragmentType  { grade } } }",
+      query: "query { thought { id, name, thought, ... on FragmentType { grade } } }",
       variables: {}
     });
   });
 
-  test("generates aliased nested queries", () => {
+  test.only("generates aliased nested queries", () => {
     const query = queryBuilder.query([
       {
         operation: "singleRootQuery",
@@ -679,14 +679,14 @@ describe("Query", () => {
       }
     ]); // query
     expect(query).toEqual({
-      query: "query  { singleRootQuery  { nestedQuery  { whatever }, duplicatedNestedQuery: nestedQuery  { whatever } } }",
+      query: "query { singleRootQuery { nestedQuery { whatever }, duplicatedNestedQuery: nestedQuery { whatever } } }",
       variables: {}
     }); // expect
   }); // test
 });
 
 describe("Mutation", () => {
-  test("generates mutation query", () => {
+  test.only("generates mutation query", () => {
     const query = queryBuilder.mutation({
       operation: "thoughtCreate",
       variables: {
@@ -697,11 +697,7 @@ describe("Mutation", () => {
     });
 
     expect(query).toEqual({
-      query: `mutation ($name: String, $thought: String) {
-  thoughtCreate (name: $name, thought: $thought) {
-    id
-  }
-}`,
+      query: "mutation ($name: String, $thought: String) { thoughtCreate (name: $name, thought: $thought) { id } }",
       variables: {
         name: "Tyrion Lannister",
         thought: "I drink and I know things."
@@ -709,7 +705,7 @@ describe("Mutation", () => {
     });
   });
 
-  test("generates mutation query with alias", () => {
+  test.only("generates mutation query with alias", () => {
     const query = queryBuilder.mutation({
       operation: {
         name: "thoughtCreate",
@@ -723,11 +719,7 @@ describe("Mutation", () => {
     });
 
     expect(query).toEqual({
-      query: `mutation ($name: String, $thought: String) {
-  myThoughtCreate: thoughtCreate (name: $name, thought: $thought) {
-    id
-  }
-}`,
+      query: "mutation ($name: String, $thought: String) { myThoughtCreate: thoughtCreate (name: $name, thought: $thought) { id } }",
       variables: {
         name: "Tyrion Lannister",
         thought: "I drink and I know things."
@@ -735,7 +727,7 @@ describe("Mutation", () => {
     });
   });
 
-  test("generates mutations with the same operation with different alias", () => {
+  test.only("generates mutations with the same operation with different alias", () => {
     const query = queryBuilder.mutation([
       {
         operation: {
@@ -762,14 +754,7 @@ describe("Mutation", () => {
     ]);
 
     expect(query).toEqual({
-      query: `mutation ($name: String, $thought: String, $character: String, $quote: String) {
-  myThoughtCreate: thoughtCreate (name: $name, thought: $thought) {
-    id
-  }
-  yourThoughtCreate: thoughtCreate (character: $character, quote: $quote) {
-    id
-  }
-}`,
+      query: "mutation ($name: String, $thought: String, $character: String, $quote: String) { myThoughtCreate: thoughtCreate (name: $name, thought: $thought) { id } yourThoughtCreate: thoughtCreate (character: $character, quote: $quote) { id } }",
       variables: {
         name: "Tyrion Lannister",
         thought: "I drink and I know things.",
@@ -779,7 +764,7 @@ describe("Mutation", () => {
     });
   });
 
-  test("generates mutation query with required variables", () => {
+  test.only("generates mutation query with required variables", () => {
     const query = queryBuilder.mutation({
       operation: "userSignup",
       variables: {
@@ -791,11 +776,7 @@ describe("Mutation", () => {
     });
 
     expect(query).toEqual({
-      query: `mutation ($name: String, $email: String!, $password: String!) {
-  userSignup (name: $name, email: $email, password: $password) {
-    userId
-  }
-}`,
+      query: "mutation ($name: String, $email: String!, $password: String!) { userSignup (name: $name, email: $email, password: $password) { userId } }",
       variables: {
         name: "Jon Doe",
         email: "jon.doe@example.com",
@@ -804,7 +785,7 @@ describe("Mutation", () => {
     });
   });
 
-  test("generates multiple mutations", () => {
+  test.only("generates multiple mutations", () => {
     const query = queryBuilder.mutation([
       {
         operation: "thoughtCreate",
@@ -825,14 +806,7 @@ describe("Mutation", () => {
     ]);
 
     expect(query).toEqual({
-      query: `mutation ($name: String, $thought: String, $prayer: String) {
-  thoughtCreate (name: $name, thought: $thought) {
-    id
-  }
-  prayerCreate (name: $name, prayer: $prayer) {
-    id
-  }
-}`,
+      query: "mutation ($name: String, $thought: String, $prayer: String) { thoughtCreate (name: $name, thought: $thought) { id } prayerCreate (name: $name, prayer: $prayer) { id } }",
       variables: {
         name: "Tyrion Lannister",
         thought: "I drink and I know things.",
@@ -841,7 +815,7 @@ describe("Mutation", () => {
     });
   });
 
-  test("generates multiple mutations with named variables", () => {
+  test.only("generates multiple mutations with named variables", () => {
     const query = queryBuilder.mutation([
       {
         operation: "delete0: deleteUser",
@@ -868,14 +842,7 @@ describe("Mutation", () => {
     ]);
 
     expect(query).toEqual({
-      query: `mutation ($id0: ID, $id1: ID) {
-  delete0: deleteUser (id: $id0) {
-    id
-  }
-  delete1: deleteUser (id: $id1) {
-    id
-  }
-}`,
+      query: "mutation ($id0: ID, $id1: ID) { delete0: deleteUser (id: $id0) { id } delete1: deleteUser (id: $id1) { id } }",
       variables: {
         id0: "user_1234",
         id1: "user_5678"
@@ -883,7 +850,7 @@ describe("Mutation", () => {
     });
   });
 
-  test("generates mutation with required variables", () => {
+  test.only("generates mutation with required variables", () => {
     const query = queryBuilder.mutation({
       operation: "userSignup",
       variables: {
@@ -895,11 +862,7 @@ describe("Mutation", () => {
     });
 
     expect(query).toEqual({
-      query: `mutation ($name: String, $email: String!, $password: String!) {
-  userSignup (name: $name, email: $email, password: $password) {
-    id
-  }
-}`,
+      query: "mutation ($name: String, $email: String!, $password: String!) { userSignup (name: $name, email: $email, password: $password) { id } }",
       variables: {
         name: "Jon Doe",
         email: "jon.doe@example.com",
@@ -908,7 +871,7 @@ describe("Mutation", () => {
     });
   });
 
-  test("generates mutation custom type", () => {
+  test.only("generates mutation custom type", () => {
     const query = queryBuilder.mutation({
       operation: "userPhoneNumber",
       variables: {
@@ -922,31 +885,25 @@ describe("Mutation", () => {
     });
 
     expect(query).toEqual({
-      query: `mutation ($phone: PhoneNumber!) {
-  userPhoneNumber (phone: $phone) {
-    id
-  }
-}`,
+      query: "mutation ($phone: PhoneNumber!) { userPhoneNumber (phone: $phone) { id } }",
       variables: {
         phone: { prefix: "+91", number: "9876543210" }
       }
     });
   });
 
-  test("generate mutation without fields selection", () => {
+  test.only("generate mutation without fields selection", () => {
     const query = queryBuilder.mutation({
       operation: "logout"
     });
 
     expect(query).toEqual({
-      query: `mutation  {
-  logout  
-}`,
+      query: "mutation { logout }",
       variables: {}
     });
   });
 
-  test("generates nested mutation operations without variables", () => {
+  test.only("generates nested mutation operations without variables", () => {
     const query = queryBuilder.mutation({
       operation: "namespaceField",
       fields: [
@@ -959,16 +916,12 @@ describe("Mutation", () => {
     });
 
     expect(query).toEqual({
-      query: `mutation  {
-  namespaceField  {
-    innerMutation  { id }
-  }
-}`,
+      query: "mutation { namespaceField { innerMutation { id } } }",
       variables: {}
     });
   });
 
-  test("generates nested mutation operations with variables", () => {
+  test.only("generates nested mutation operations with variables", () => {
     const query = queryBuilder.mutation({
       operation: "namespaceField",
       fields: [
@@ -983,16 +936,12 @@ describe("Mutation", () => {
     });
 
     expect(query).toEqual({
-      query: `mutation ($name: String) {
-  namespaceField  {
-    innerMutation (name: $name) { id }
-  }
-}`,
+      query: "mutation ($name: String) { namespaceField { innerMutation (name: $name) { id } } }",
       variables: { name: "stringy" }
     });
   });
 
-  test("generates multiple nested mutation operations with variables", () => {
+  test.only("generates multiple nested mutation operations with variables", () => {
     const query = queryBuilder.mutation([
       {
         operation: "namespaceField",
@@ -1021,14 +970,7 @@ describe("Mutation", () => {
     ]);
 
     expect(query).toEqual({
-      query: `mutation ($nameB: String, $nameA: String) {
-  namespaceField  {
-    mutationA (nameA: $nameA) { id }
-  }
-  namespaceField  {
-    mutationB (nameB: $nameB) { id }
-  }
-}`,
+      query: "mutation ($nameB: String, $nameA: String) { namespaceField { mutationA (nameA: $nameA) { id } } namespaceField { mutationB (nameB: $nameB) { id } } }",
       variables: { nameA: "A", nameB: "B" }
     });
   });
@@ -1052,11 +994,7 @@ describe("Mutation", () => {
     );
 
     expect(query).toEqual({
-      query: `mutation operation ($name: String, $thought: String) {
-      thoughtCreate (name: $name, thought: $thought) {
-    id
-  }
-    }`,
+      query: "mutation operation ($name: String, $thought: String) { thoughtCreate (name: $name, thought: $thought) { id } }",
       variables: {
         name: "Tyrion Lannister",
         thought: "I drink and I know things."
@@ -1066,7 +1004,7 @@ describe("Mutation", () => {
 });
 
 describe("Subscriptions", () => {
-  test("generates subscriptions", () => {
+  test.only("generates subscriptions", () => {
     const query = queryBuilder.subscription([
       {
         operation: "thoughtCreate",
@@ -1087,14 +1025,7 @@ describe("Subscriptions", () => {
     ]);
 
     expect(query).toEqual({
-      query: `subscription ($name: String, $thought: String, $prayer: String) {
-  thoughtCreate (name: $name, thought: $thought) {
-    id
-  }
-  prayerCreate (name: $name, prayer: $prayer) {
-    id
-  }
-}`,
+      query: "subscription ($name: String, $thought: String, $prayer: String) { thoughtCreate (name: $name, thought: $thought) { id } prayerCreate (name: $name, prayer: $prayer) { id } }",
       variables: {
         name: "Tyrion Lannister",
         thought: "I drink and I know things.",
@@ -1103,7 +1034,7 @@ describe("Subscriptions", () => {
     });
   });
 
-  test("generates subscriptions with query alias", () => {
+  test.only("generates subscriptions with query alias", () => {
     const query = queryBuilder.subscription([
       {
         operation: {
@@ -1130,14 +1061,7 @@ describe("Subscriptions", () => {
     ]);
 
     expect(query).toEqual({
-      query: `subscription ($name: String, $thought: String, $prayer: String) {
-  myThoughtCreate: thoughtCreate (name: $name, thought: $thought) {
-    id
-  }
-  myPrayerCreate: prayerCreate (name: $name, prayer: $prayer) {
-    id
-  }
-}`,
+      query: "subscription ($name: String, $thought: String, $prayer: String) { myThoughtCreate: thoughtCreate (name: $name, thought: $thought) { id } myPrayerCreate: prayerCreate (name: $name, prayer: $prayer) { id } }",
       variables: {
         name: "Tyrion Lannister",
         thought: "I drink and I know things.",
@@ -1146,7 +1070,7 @@ describe("Subscriptions", () => {
     });
   });
 
-  test("generates subscription with required variables", () => {
+  test.only("generates subscription with required variables", () => {
     const query = queryBuilder.subscription({
       operation: "userSignup",
       variables: {
@@ -1158,11 +1082,7 @@ describe("Subscriptions", () => {
     });
 
     expect(query).toEqual({
-      query: `subscription ($name: String, $email: String!, $password: String!) {
-  userSignup (name: $name, email: $email, password: $password) {
-    id
-  }
-}`,
+      query: "subscription ($name: String, $email: String!, $password: String!) { userSignup (name: $name, email: $email, password: $password) { id } }",
       variables: {
         name: "Jon Doe",
         email: "jon.doe@example.com",
@@ -1171,7 +1091,7 @@ describe("Subscriptions", () => {
     });
   });
 
-  test("generates subscription custom type", () => {
+  test.only("generates subscription custom type", () => {
     const query = queryBuilder.subscription({
       operation: "userPhoneNumber",
       variables: {
@@ -1185,11 +1105,7 @@ describe("Subscriptions", () => {
     });
 
     expect(query).toEqual({
-      query: `subscription ($phone: PhoneNumber!) {
-  userPhoneNumber (phone: $phone) {
-    id
-  }
-}`,
+      query: "subscription ($phone: PhoneNumber!) { userPhoneNumber (phone: $phone) { id } }",
       variables: {
         phone: { prefix: "+91", number: "9876543210" }
       }
