@@ -2,14 +2,6 @@
 
 A simple helper function to generate GraphQL queries using plain JavaScript Objects (JSON).
 
-<a href="https://www.npmjs.com/package/gql-query-builder">
-<img src="https://img.shields.io/npm/dt/gql-query-builder?label=Downloads" alt="downloads" />
-</a>
-
-<a href="https://replit.com/@atulmy/gql-query-builder#index.js">
-<img src="https://img.shields.io/badge/Demo-replit-blue" alt="demo" />
-</a>
-
 ## Install
 
 `npm install gql-query-builder --save` or `yarn add gql-query-builder`
@@ -135,11 +127,13 @@ const query = gqlQuery(options: object, adapter?: MyCustomQueryAdapter,config?: 
     <td>Array</td>
     <td>No</td>
     <td>
-      [{
-        name: "NamedFragment",
-        on: "User",
-        fields: ["grade"]
-      }]
+      <code>
+        [{<br/>
+          name: "NamedFragment",<br/>
+          on: "User",<br/>
+          fields: ["grade"]<br/>
+        }]
+      </code>
     </td>
   </tr>
   </tbody>
