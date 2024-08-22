@@ -91,7 +91,7 @@ export default class DefaultQueryAdapter implements IQueryAdapter {
       }`
     );
     return {
-      query,
+      query: query.replace(/\n+/g, "").replace(/ +/g, " "),
       variables: queryVariablesMap(this.variables, this.fields)
     };
   }

@@ -93,7 +93,7 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
     }
 
     return {
-      query,
+      query: query.replace(/\n+/g, "").replace(/ +/g, " "),
       variables: queryVariablesMap(variables, this.fields)
     };
   }

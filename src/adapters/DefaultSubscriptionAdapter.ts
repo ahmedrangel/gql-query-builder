@@ -71,9 +71,7 @@ implements ISubscriptionAdapter {
     content: string
   ) {
     return {
-      query: `${type} ${this.queryDataArgumentAndTypeMap(variables)} {
-  ${content}
-}`,
+      query: `${type} ${this.queryDataArgumentAndTypeMap(variables)} { ${content} }`.replace(/\n+/g, "").replace(/ +/g, " "),
       variables: queryVariablesMap(variables)
     };
   }

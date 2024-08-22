@@ -106,7 +106,7 @@ export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
         .charAt(0)
         .toUpperCase()}${operation.slice(
         1
-      )} ${this.queryDataArgumentAndTypeMap()} { ${content} }`,
+      )} ${this.queryDataArgumentAndTypeMap()} { ${content} }`.replace(/\n+/g, "").replace(/ +/g, " "),
       variables: queryVariablesMap(this.variables)
     };
   }

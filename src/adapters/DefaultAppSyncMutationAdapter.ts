@@ -64,9 +64,7 @@ export default class DefaultAppSyncMutationAdapter implements IMutationAdapter {
     return {
       query: `${OperationType.Mutation} ${
         operation.charAt(0).toUpperCase() + operation.slice(1)
-      } ${this.queryDataArgumentAndTypeMap(variables)} {
-  ${content}
-}`,
+      } ${this.queryDataArgumentAndTypeMap(variables)} { ${content} }`.replace(/\n+/g, "").replace(/ +/g, " "),
       variables: queryVariablesMap(variables)
     };
   }
