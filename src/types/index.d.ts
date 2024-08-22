@@ -26,7 +26,8 @@ export interface NestedField {
   operation: string;
   variables: IQueryBuilderOptions[];
   fields: Fields;
-  fragment?: boolean | null;
+  inlineFragment?: boolean | null;
+  namedFragment?: boolean | null;
 }
 
 export interface IMutationAdapter {
@@ -51,4 +52,13 @@ export interface ISubscriptionAdapter {
     variables: any;
     query: string;
   };
+}
+
+export interface Config {
+  operationName?: string;
+  fragment?: {
+    name: string;
+    on: string;
+    fields: any[];
+  }[];
 }

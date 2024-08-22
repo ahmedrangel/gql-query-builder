@@ -57,16 +57,9 @@ const multiQuery = (options) => {
           [`${options.alias}_tag_in`]: { name: "tag_in", type: "[String]", value: options?.tags }
         },
         fields: [
-          "id",
-          { title: ["romaji", "english"] },
-          { coverImage: ["extraLarge"] },
-          "bannerImage",
-          { startDate: ["year", "month", "day"] },
-          "format",
-          "status",
-          "averageScore",
-          { trailer: ["id", "site"] },
-          { nextAiringEpisode: ["airingAt"] }
+          { operation: "details",
+            namedFragment: true
+          }
         ]
       }]
   };
@@ -77,7 +70,24 @@ const getInfo = (options) => {
   const queryTopRated = multiQuery({ alias: "top", ...options, sort: Sort.SCORE_DESC });
   const queryTrending = multiQuery({ alias: "trending", ...options, sort: [Sort.TRENDING_DESC, Sort.POPULARITY_DESC] });
 
-  const query = gqlQuery([queryNew, queryTopRated, queryTrending]);
+  const query = gqlQuery([queryNew, queryTopRated, queryTrending], null, {
+    fragment: [{
+      name: "details",
+      on: "Media",
+      fields: [
+        "id",
+        { title: ["romaji", "english"] },
+        { coverImage: ["extraLarge"] },
+        "bannerImage",
+        { startDate: ["year", "month", "day"] },
+        "format",
+        "status",
+        "averageScore",
+        { trailer: ["id", "site"] },
+        { nextAiringEpisode: ["airingAt"] }
+      ]
+    }]
+  });
   return JSON.stringify(query);
 };
 

@@ -13,8 +13,11 @@ export const isNestedField = (object: any): object is NestedField => {
       object.hasOwnProperty("fields")) ||
     (typeof object === "object" &&
       object.hasOwnProperty("operation") &&
-      object.hasOwnProperty("fragment") &&
-      object.hasOwnProperty("fields"))
+      object.hasOwnProperty("inlineFragment") &&
+      object.hasOwnProperty("fields")) ||
+    (typeof object === "object" &&
+      object.hasOwnProperty("operation") &&
+      object.hasOwnProperty("namedFragment"))
   );
 };
 
@@ -35,23 +38,24 @@ export const resolveVariables = (operations: IQueryBuilderOptions[]): any => {
 export const getNestedVariables = (fields: Fields) => {
   let variables = {};
   const getDeepestVariables = (innerFields: Fields) => {
-    innerFields?.forEach((field: string | object | NestedField) => {
-      if (isNestedField(field)) {
-        variables = {
-          ...field.variables,
-          ...variables,
-          ...(field.fields && getDeepestVariables(field.fields))
-        };
-      }
-      else {
-        if (typeof field === "object") {
-          for (const [, value] of Object.entries(field)) {
-            getDeepestVariables(value);
+    if (Array.isArray(innerFields)) {
+      innerFields?.forEach((field: string | object | NestedField) => {
+        if (isNestedField(field)) {
+          variables = {
+            ...field.variables,
+            ...variables,
+            ...(field.fields && getDeepestVariables(field.fields))
+          };
+        }
+        else {
+          if (typeof field === "object") {
+            for (const [, value] of Object.entries(field)) {
+              getDeepestVariables(value);
+            }
           }
         }
-      }
-    });
-
+      });
+    }
     return variables;
   };
   getDeepestVariables(fields);
@@ -81,7 +85,7 @@ export const queryFieldsMap = (fields?: Fields): string => {
           }`;
           // If it's not the last item in array, join with comma
           if (index < array.length - 1) {
-            result += ", ";
+            result += " ";
           }
         }
       );
@@ -90,15 +94,13 @@ export const queryFieldsMap = (fields?: Fields): string => {
     else {
       return `${field}`;
     }
-  }).join(", ") : "";
+  }).join(" ") : "";
 };
 
 export const queryNestedFieldMap = (field: NestedField) => {
-  return `${getFragment(field)}${operationOrFragment(field)} ${
-    isFragment(field)? "": queryDataNameAndArgumentMap(field.variables)
-  } ${
-    field.fields.length > 0? "{ " + queryFieldsMap(field.fields) + " }": ""
-  }`;
+  return `${getFragment(field) + operationOrInlineFragment(field)} ${
+    isInlineFragment(field) || field.namedFragment ? "": queryDataNameAndArgumentMap(field.variables)
+  } ${Array.isArray(field.fields) && field.fields.length > 0? "{ " + queryFieldsMap(field.fields) + " }": ""}`;
 };
 
 export const operationOrAlias = (
@@ -107,16 +109,20 @@ export const operationOrAlias = (
   return typeof operation === "string"? operation: `${operation.alias}: ${operation.name}`;
 };
 
-export const isFragment = (field: NestedField): boolean => {
-  return field?.fragment === true || false;
+export const isInlineFragment = (field: NestedField): boolean => {
+  return field?.inlineFragment === true || false;
 };
 
-export const operationOrFragment = (field: NestedField): string => {
-  return isFragment(field)? field.operation: operationOrAlias(field.operation);
+export const isNamedFragment = (field: NestedField): boolean => {
+  return field?.namedFragment === true || false;
+};
+
+export const operationOrInlineFragment = (field: NestedField): string => {
+  return isInlineFragment(field)? field.operation: operationOrAlias(field.operation);
 };
 
 export const getFragment = (field: NestedField): string => {
-  return isFragment(field) ? "... on " : "";
+  return isInlineFragment(field) ? "... on " : isNamedFragment(field) ? "..." : "";
 };
 
 // Variables map. eg: { "id": 1, "name": "Jon Doe" }
