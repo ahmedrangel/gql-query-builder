@@ -112,7 +112,7 @@ const query = gqlQuery(options: object, adapter?: MyCustomQueryAdapter,config?: 
   </tr>
     <tr>
     <td>fragment</td>
-    <td>Reusable named fragment fields to be sent to the server</td>
+    <td>Named fragment config for reusable fields to be sent to the server</td>
     <td>Array</td>
     <td>No</td>
     <td>
