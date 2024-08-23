@@ -64,10 +64,10 @@ const subscription = gqlSubscription(options: object)
       { key: { value: value, required: true, type: GQL type, list: true, name: argument name } eg:
       <br />
       <code>{
-        email: { value: "user@example.com", required: true },
-        password: { value: "123456", required: true },
-        secondaryEmails: { value: [], required: false, type: 'String', list: true, name: secondaryEmail }
-      }</code>
+  email: { value: "user@example.com", required: true },
+  password: { value: "123456", required: true },
+  secondaryEmails: { value: [], required: false, type: 'String', list: true, name: secondaryEmail }
+}</code>
     </td>
   </tr>
   </tbody>
@@ -117,10 +117,10 @@ const query = gqlQuery(options: object, adapter?: MyCustomQueryAdapter,config?: 
     <td>No</td>
     <td>
       <code>[{
-          name: "NamedFragment",
-          on: "User",
-          fields: ["grade"]
-        }]</code>
+  name: "NamedFragment",
+  on: "User",
+  fields: ["grade"]
+}]</code>
     </td>
   </tr>
   </tbody>
