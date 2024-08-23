@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "build": "shx rm -rf ./dist/* && tsup src/index.ts --format esm --dts --config tsconfig.json",
-    "lint": "eslint --fix --config .config/eslint.mjs",
+    "lint": "eslint --config .config/eslint.mjs",
     "test": "jest --config",
     "playground": "node playground/index.js"
   },
