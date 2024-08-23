@@ -162,7 +162,7 @@ const query = gqlQuery({
 console.log(query);
 ```
 
-Output
+Output:
 
 ```js
 {
@@ -173,6 +173,7 @@ Output
 
 [↑ all examples](#examples)
 
+---
 #### Query (with variables):
 
 ```js
@@ -187,7 +188,7 @@ const query = gqlQuery({
 console.log(query)
 ```
 
-Output
+Output:
 
 ```js
 {
@@ -198,6 +199,7 @@ Output
 
 [↑ all examples](#examples)
 
+---
 #### Query (with nested fields selection):
 
 ```js
@@ -227,7 +229,7 @@ const query = gqlQuery({
 console.log(query);
 ```
 
-Output
+Output:
 
 ```js
 {
@@ -238,6 +240,7 @@ Output
 
 [↑ all examples](#examples)
 
+---
 #### Query (with required variables):
 
 ```js
@@ -255,7 +258,7 @@ const query = gqlQuery({
 console.log(query);
 ```
 
-Output
+Output:
 
 ```js
 {
@@ -266,6 +269,7 @@ Output
 
 [↑ all examples](#examples)
 
+---
 #### Query (with custom argument name):
 
 ```js
@@ -296,7 +300,7 @@ const query = gqlQuery([{
 console.log(query);
 ```
 
-Output
+Output:
 
 ```js
 {
@@ -307,6 +311,7 @@ Output
 
 [↑ all examples](#examples)
 
+---
 #### Query (with operation name):
 
 ```js
@@ -322,7 +327,7 @@ const query = gqlQuery({
 console.log(query);
 ```
 
-Output
+Output:
 
 ```js
 {
@@ -333,6 +338,7 @@ Output
 
 [↑ all examples](#examples)
 
+---
 #### Query (with empty fields):
 
 ```js
@@ -355,7 +361,7 @@ const query = gqlQuery([
 console.log(query);
 ```
 
-Output
+Output:
 
 ```js
 {
@@ -366,6 +372,7 @@ Output
 
 [↑ all examples](#examples)
 
+---
 #### Query (with alias):
 
 ```js
@@ -382,7 +389,7 @@ const query = gqlQuery({
 console.log(query);
 ```
 
-Output
+Output:
 
 ```js
 {
@@ -393,6 +400,7 @@ Output
 
 [↑ all examples](#examples)
 
+---
 #### Query (with inline fragment):
 
 ```js
@@ -415,7 +423,7 @@ const query = gqlQuery({
 console.log(query);
 ```
 
-Output
+Output:
 
 ```js
 {
@@ -453,7 +461,7 @@ const query = gqlQuery({
 console.log(query);
 ```
 
-Output
+Output:
 
 ```js
 {
@@ -464,6 +472,7 @@ Output
 
 [↑ all examples](#examples)
 
+---
 #### Query (with adapter defined):
 
 For example, to inject `SomethingIDidInMyAdapter` in the `operationWrapperTemplate` method.
@@ -480,7 +489,7 @@ const query = gqlQuery({
 console.log(query);
 ```
 
-Output
+Output:
 
 ```js
 { 
@@ -493,6 +502,7 @@ Take a peek at [DefaultQueryAdapter](src/adapters/DefaultQueryAdapter.ts) to get
 
 [↑ all examples](#examples)
 
+---
 #### Mutation:
 
 ```js
@@ -510,7 +520,7 @@ const mutation = gqlMutation({
 console.log(mutation);
 ```
 
-Output
+Output:
 
 ```js
 {
@@ -521,6 +531,7 @@ Output
 
 [↑ all examples](#examples)
 
+---
 #### Mutation (with required variables):
 
 ```js
@@ -539,7 +550,7 @@ const mutation = gqlMutation({
 console.log(mutation);
 ```
 
-Output
+Output:
 
 ```js
 {
@@ -550,6 +561,7 @@ Output
 
 [↑ all examples](#examples)
 
+---
 #### Mutation (with custom types):
 
 ```js
@@ -570,7 +582,7 @@ const mutation = gqlMutation({
 console.log(mutation)
 ```
 
-Output
+Output:
 
 ```js
 {
@@ -581,6 +593,7 @@ Output
 
 [↑ all examples](#examples)
 
+---
 #### Mutation (with adapter defined):
 
 For example, to inject `SomethingIDidInMyAdapter` in the `operationWrapperTemplate` method.
@@ -597,7 +610,7 @@ const mutation = gqlMutation({
 console.log(mutation);
 ```
 
-Output
+Output:
 
 ```js
 { 
@@ -625,7 +638,7 @@ const mutation = gqlMutation({
 console.log(mutation);
 ```
 
-Output
+Output:
 
 ```js
 {
@@ -636,6 +649,7 @@ Output
 
 [↑ all examples](#examples)
 
+---
 #### Subscription:
 
 ```js
@@ -653,7 +667,7 @@ const subscription = gqlSubscription({
 console.log(subscription);
 ```
 
-Output
+Output:
 
 ```js
 {
@@ -664,6 +678,7 @@ Output
 
 [↑ all examples](#examples)
 
+---
 #### Subscription (with adapter defined):
 
 For example, to inject `SomethingIDidInMyAdapter` in the `operationWrapperTemplate` method.
@@ -680,7 +695,7 @@ const subscription = gqlSubscription({
 console.log(subscription);
 ```
 
-Output
+Output:
 
 ```js
 { 
@@ -693,6 +708,7 @@ Take a peek at [DefaultSubscriptionAdapter](src/adapters/DefaultSubscriptionAdap
 
 [↑ all examples](#examples)
 
+---
 #### Example with [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Window/fetch)
 
 ```js
@@ -723,6 +739,7 @@ async function getThoughts () {
 
 [↑ all examples](#examples)
 
+---
 #### Example with [Ofetch](https://github.com/unjs/ofetch)
 
 ```js
@@ -749,6 +766,7 @@ async function getThoughts () {
 
 [↑ all examples](#examples)
 
+---
 #### Example with [Axios](https://github.com/axios/axios)
 
 ```js
@@ -774,4 +792,3 @@ async function getThoughts () {
 ```
 
 [↑ all examples](#examples)
-
