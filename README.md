@@ -1,6 +1,5 @@
 # GraphQL Payload Builder
-
-A simple helper function to generate GraphQL payloads using plain JavaScript Objects (JSON).
+This is an optimized fork of [gql-query-builder](https://github.com/atulmy/gql-query-builder) with extra features for generating GraphQL payloads using plain JavaScript Objects (JSON).
 
 ## Install
 
