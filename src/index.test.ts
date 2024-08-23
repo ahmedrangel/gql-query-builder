@@ -660,9 +660,6 @@ describe("Query", () => {
     const query = gqlQuery({
       operation: "thought",
       fields: [
-        "id",
-        "name",
-        "thought",
         {
           operation: "NamedFragment",
           namedFragment: true
@@ -672,12 +669,12 @@ describe("Query", () => {
       fragment: [{
         name: "NamedFragment",
         on: "User",
-        fields: ["grade"]
+        fields: ["id", "name", "thought", "grade"]
       }]
     });
 
     expect(query).toEqual({
-      query: "query { thought { id name thought ...NamedFragment } } fragment NamedFragment on User { grade }",
+      query: "query { thought { ...NamedFragment } } fragment NamedFragment on User { id name thought grade }",
       variables: {}
     });
   });
@@ -1021,6 +1018,34 @@ describe("Mutation", () => {
 
     expect(query).toEqual({
       query: "mutation operation ($name: String, $thought: String) { thoughtCreate (name: $name, thought: $thought) { id } }",
+      variables: {
+        name: "Tyrion Lannister",
+        thought: "I drink and I know things."
+      }
+    });
+  });
+
+  test.only("generates mutation query with named fragment", () => {
+    const query = gqlMutation({
+      operation: "thoughtCreate",
+      variables: {
+        name: "Tyrion Lannister",
+        thought: "I drink and I know things."
+      },
+      fields: [{
+        operation: "NamedFragment",
+        namedFragment: true
+      }]
+    }, null, {
+      fragment: [{
+        name: "NamedFragment",
+        on: "Create",
+        fields: ["id"]
+      }]
+    });
+
+    expect(query).toEqual({
+      query: "mutation ($name: String, $thought: String) { thoughtCreate (name: $name, thought: $thought) { ...NamedFragment } } fragment NamedFragment on Create { id }",
       variables: {
         name: "Tyrion Lannister",
         thought: "I drink and I know things."
