@@ -1,7 +1,7 @@
 {
   "name": "gql-payload",
   "version": "1.0.0",
-  "description": "Simple GraphQL Payload Builder",
+  "description": "GraphQL Payload Builder",
   "type": "module",
   "repository": {
     "type": "git",
