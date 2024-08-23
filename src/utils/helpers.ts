@@ -6,19 +6,21 @@ Defines an array of strings or objects to define query fields
 @example [{id: 1, name: 'Chuck'}]
  */
 export const isNestedField = (object: any): object is NestedField => {
-  return (
-    (typeof object === "object" &&
-      object.hasOwnProperty("operation") &&
-      object.hasOwnProperty("variables") &&
-      object.hasOwnProperty("fields")) ||
-    (typeof object === "object" &&
-      object.hasOwnProperty("operation") &&
-      object.hasOwnProperty("inlineFragment") &&
-      object.hasOwnProperty("fields")) ||
-    (typeof object === "object" &&
-      object.hasOwnProperty("operation") &&
-      object.hasOwnProperty("namedFragment"))
-  );
+  if (typeof object !== "object") return false;
+
+  const generalCondition = object.operation && object.variables && object.fields;
+  const inlineFragmentCondition = object.operation && object.inlineFragment && object.fields;
+  const namedFragmentCondition = object.operation && object.namedFragment;
+
+  if (object.operation && !object.variables && !object.fields && !object.namedFragment && !object.inlineFragment) {
+    throw new Error("Operations must have variables, fields, namedFragment, or inlineFragment properties");
+  }
+
+  if (object.inlineFragment && !object.fields) {
+    throw new Error("Inline fragment must have a fields property");
+  }
+
+  return (generalCondition || inlineFragmentCondition || namedFragmentCondition);
 };
 
 
@@ -81,9 +83,9 @@ export const queryFieldsMap = (fields?: Fields): string => {
       const entries = Object.entries<Fields>(field as Record<string, Fields>);
       for (let i = 0; i < entries.length; i++) {
         const [key, values] = entries[i];
-        result += `${key} ${
-          values.length > 0? "{ " + queryFieldsMap(values) + " }": ""
-        }`;
+        result += Array.isArray(values) ? `${key} ${
+          values.length > 0 ? "{ " + queryFieldsMap(values) + " }": ""
+        }`: "";
         // If it's not the last item in entries array, join with comma
         if (i < entries.length - 1) {
           result += " ";
