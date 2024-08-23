@@ -30,14 +30,14 @@ export default class DefaultAppSyncQueryAdapter implements IQueryAdapter {
   public queriesBuilder (queries: IQueryBuilderOptions[]) {
     const content = () => {
       const tmpl: string[] = [];
-      queries.forEach((query) => {
+      for (const query of queries) {
         if (query) {
           this.operation = query.operation;
           this.fields = query.fields;
           this.variables = query.variables;
           tmpl.push(this.operationTemplate());
         }
-      });
+      }
       return tmpl.join(" ");
     };
     return this.operationWrapperTemplate(content());

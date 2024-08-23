@@ -39,7 +39,7 @@ export const getNestedVariables = (fields: Fields) => {
   let variables = {};
   const getDeepestVariables = (innerFields: Fields) => {
     if (Array.isArray(innerFields)) {
-      innerFields?.forEach((field: string | object | NestedField) => {
+      for (const field of innerFields) {
         if (isNestedField(field)) {
           variables = {
             ...field.variables,
@@ -54,7 +54,7 @@ export const getNestedVariables = (fields: Fields) => {
             }
           }
         }
-      });
+      }
     }
     return variables;
   };
@@ -78,17 +78,17 @@ export const queryFieldsMap = (fields?: Fields): string => {
     }
     else if (typeof field === "object") {
       let result = "";
-      Object.entries<Fields>(field as Record<string, Fields>).forEach(
-        ([key, values], index, array) => {
-          result += `${key} ${
-            values.length > 0? "{ " + queryFieldsMap(values) + " }": ""
-          }`;
-          // If it's not the last item in array, join with comma
-          if (index < array.length - 1) {
-            result += " ";
-          }
+      const entries = Object.entries<Fields>(field as Record<string, Fields>);
+      for (let i = 0; i < entries.length; i++) {
+        const [key, values] = entries[i];
+        result += `${key} ${
+          values.length > 0? "{ " + queryFieldsMap(values) + " }": ""
+        }`;
+        // If it's not the last item in entries array, join with comma
+        if (i < entries.length - 1) {
+          result += " ";
         }
-      );
+      }
       return result;
     }
     else {

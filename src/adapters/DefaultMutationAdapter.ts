@@ -3,7 +3,7 @@
 @desc A basic implementation to use
 @desc modify the output of the mutation template by passing a second argument to mutation(options, AdapterClass)
  */
-import type { IQueryBuilderOptions, IOperation, Fields, IMutationAdapter } from "../types";
+import type { IQueryBuilderOptions, IOperation, Fields, IMutationAdapter, Config } from "../types";
 import { OperationType } from "../enums";
 import { getNestedVariables, queryDataNameAndArgumentMap, queryDataType, queryFieldsMap, queryVariablesMap, resolveVariables } from "../utils/helpers";
 
@@ -11,7 +11,7 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
   private variables: any | undefined;
   private fields: Fields | undefined;
   private operation!: string | IOperation;
-  private config: { [key: string]: unknown };
+  private config: Config | undefined;
 
   constructor (
     options: IQueryBuilderOptions | IQueryBuilderOptions[],
@@ -28,21 +28,18 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
 
     // Default configs
     this.config = {
-      operationName: ""
+      operationName: null,
+      fragment: null
     };
     if (configuration) {
-      Object.entries(configuration).forEach(([key, value]) => {
+      for (const [key, value] of Object.entries(configuration)) {
         this.config[key] = value;
-      });
+      }
     }
   }
 
   public mutationBuilder () {
-    return this.operationWrapperTemplate(
-      OperationType.Mutation,
-      this.variables,
-      this.operationTemplate(this.operation)
-    );
+    return this.operationWrapperTemplate(this.variables, this.operationTemplate(this.operation));
   }
 
   public mutationsBuilder (mutations: IQueryBuilderOptions[]) {
@@ -52,11 +49,7 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
       this.fields = opts.fields;
       return this.operationTemplate(opts.operation);
     });
-    return this.operationWrapperTemplate(
-      OperationType.Mutation,
-      resolveVariables(mutations),
-      content.join("\n  ")
-    );
+    return this.operationWrapperTemplate(resolveVariables(mutations), content.join("\n  "));
   }
 
   private queryDataArgumentAndTypeMap (variablesUsed: any): string {
@@ -76,20 +69,19 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
   }
 
   // start of mutation building
-  private operationWrapperTemplate (
-    type: OperationType,
-    variables: any,
-    content: string
-  ) {
-    let query = `${type} ${this.queryDataArgumentAndTypeMap(variables)} {
-      ${content}
-    }`;
+  private operationWrapperTemplate (variables: any, content: string) {
+    let query = `${OperationType.Mutation} ${this.queryDataArgumentAndTypeMap(variables)} { ${content} }`;
 
     if (this.config.operationName) {
-      query = query.replace(
-        "mutation",
-        `mutation ${this.config.operationName}`
-      );
+      query = query.replace("mutation", `mutation ${this.config.operationName}`);
+    }
+
+    if (this.config.fragment && Array.isArray(this.config.fragment)) {
+      const fragmentsArray = [];
+      for (const fragment of this.config.fragment) {
+        fragmentsArray.push(`fragment ${fragment.name} on ${fragment.on} { ${queryFieldsMap(fragment.fields)} }`);
+      }
+      query = `${query} ${fragmentsArray.join(" ")}`;
     }
 
     return {
@@ -102,12 +94,8 @@ export default class DefaultMutationAdapter implements IMutationAdapter {
     const operationName =
       typeof operation === "string"? operation: `${operation.alias}: ${operation.name}`;
 
-    return `${operationName} ${queryDataNameAndArgumentMap(
-      this.variables
-    )} ${
-      this.fields && this.fields.length > 0? `{
-    ${queryFieldsMap(this.fields)}
-  }`: ""
+    return `${operationName} ${queryDataNameAndArgumentMap(this.variables)} ${
+      this.fields && this.fields.length > 0 ? `{ ${queryFieldsMap(this.fields)} }`: ""
     }`;
   }
 }

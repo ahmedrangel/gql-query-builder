@@ -26,7 +26,6 @@ implements ISubscriptionAdapter {
 
   public subscriptionBuilder () {
     return this.operationWrapperTemplate(
-      OperationType.Subscription,
       this.variables,
       this.operationTemplate(this.operation)
     );
@@ -40,7 +39,6 @@ implements ISubscriptionAdapter {
       return this.operationTemplate(opts.operation);
     });
     return this.operationWrapperTemplate(
-      OperationType.Subscription,
       resolveVariables(subscriptions),
       content.join("\n  ")
     );
@@ -65,13 +63,9 @@ implements ISubscriptionAdapter {
   }
 
   // start of subscription building
-  private operationWrapperTemplate (
-    type: OperationType,
-    variables: any,
-    content: string
-  ) {
+  private operationWrapperTemplate (variables: any, content: string) {
     return {
-      query: `${type} ${this.queryDataArgumentAndTypeMap(variables)} { ${content} }`.replace(/\n+/g, "").replace(/ +/g, " "),
+      query: `${OperationType.Subscription} ${this.queryDataArgumentAndTypeMap(variables)} { ${content} }`.replace(/\n+/g, "").replace(/ +/g, " "),
       variables: queryVariablesMap(variables)
     };
   }

@@ -29,7 +29,7 @@ export const gqlQuery = (
 
 export const gqlMutation = (
   options: IQueryBuilderOptions | IQueryBuilderOptions[],
-  adapter?: IMutationAdapter,
+  adapter?: IMutationAdapter | null,
   config?: any
 ) => {
   let customAdapter: IMutationAdapter;
@@ -54,7 +54,7 @@ export const gqlMutation = (
 
 export const gqlSubscription = (
   options: IQueryBuilderOptions | IQueryBuilderOptions[],
-  adapter?: ISubscriptionAdapter
+  adapter?: ISubscriptionAdapter | null
 ) => {
   let customAdapter: ISubscriptionAdapter;
   let defaultAdapter: ISubscriptionAdapter;
