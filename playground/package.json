@@ -8,6 +8,6 @@
   "main": "index.js",
   "type": "module",
   "dependencies": {
-    "gql-query-builder": "workspace:*"
+    "gql-payload": "workspace:*"
   }
 }

@@ -1,15 +1,15 @@
-# GraphQL Query Builder
+# GraphQL Payload Builder
 
-A simple helper function to generate GraphQL queries using plain JavaScript Objects (JSON).
+A simple helper function to generate GraphQL payloads using plain JavaScript Objects (JSON).
 
 ## Install
 
-`npm install gql-query-builder --save` or `yarn add gql-query-builder`
+`npm install gql-payload --save` or `yarn add gql-payload`
 
 ## Usage
 
 ```ts
-import { gqlQuery, gqlMutation, gqlSubscription } from 'gql-query-builder'
+import { gqlQuery, gqlMutation, gqlSubscription } from 'gql-payload'
 
 const query = gqlQuery(options: object)
 const mutation = gqlMutation(options: object)
@@ -91,7 +91,7 @@ An optional second argument `adapter` is a typescript/javascript class that impl
 If adapter is undefined then `src/adapters/DefaultQueryAdapter` or `src/adapters/DefaultMutationAdapter` is used.
 
 ```ts
-import { gqlQuery } as gql from 'gql-query-builder'
+import { gqlQuery } as gql from 'gql-payload'
 
 const query = gqlQuery(options: object, adapter?: MyCustomQueryAdapter,config?: object)
 ```
@@ -162,7 +162,7 @@ const query = gqlQuery(options: object, adapter?: MyCustomQueryAdapter,config?: 
 #### Query:
 
 ```js
-import { gqlQuery } from 'gql-query-builder'
+import { gqlQuery } from 'gql-payload'
 
 const query = gqlQuery({
   operation: 'thoughts',
@@ -186,7 +186,7 @@ query {
 #### Query (with variables):
 
 ```js
-import { gqlQuery } from 'gql-query-builder'
+import { gqlQuery } from 'gql-payload'
 
 const query = gqlQuery({
   operation: 'thought',
@@ -214,7 +214,7 @@ query ($id: Int) {
 #### Query (with nested fields selection):
 
 ```js
-import { gqlQuery } from 'gql-query-builder'
+import { gqlQuery } from 'gql-payload'
 
 const query = gqlQuery({
   operation: 'orders',
@@ -262,7 +262,7 @@ query {
 #### Query (with required variables):
 
 ```js
-import { gqlQuery } from 'gql-query-builder'
+import { gqlQuery } from 'gql-payload'
 
 const query = gqlQuery({
   operation: 'userLogin',
@@ -295,7 +295,7 @@ query ($email: String!, $password: String!) {
 #### Query (with custom argument name):
 
 ```js
-import { gqlQuery } from 'gql-query-builder'
+import { gqlQuery } from 'gql-payload'
 
 const query = gqlQuery([{
   operation: "someoperation",
@@ -342,7 +342,7 @@ query($id2: ID, $id1: ID) {
 #### Query (with operation name):
 
 ```js
-import { gqlQuery } from 'gql-query-builder'
+import { gqlQuery } from 'gql-payload'
 
 const query = gqlQuery({
   operation: 'userLogin',
@@ -367,7 +367,7 @@ query someoperation {
 #### Query (with empty fields):
 
 ```js
-import { gqlQuery } from 'gql-query-builder'
+import { gqlQuery } from 'gql-payload'
 
 const query = gqlQuery([{
   operation: "getFilteredUsersCount",
@@ -399,7 +399,7 @@ query {
 #### Query (with alias):
 
 ```js
-import { gqlQuery } from 'gql-query-builder'
+import { gqlQuery } from 'gql-payload'
 
 const query = gqlQuery({
   operation: {
@@ -426,7 +426,7 @@ query {
 #### Query (with inline fragment):
 
 ```js
-import { gqlQuery } from 'gql-query-builder'
+import { gqlQuery } from 'gql-payload'
 
 const query = gqlQuery({
     operation: "thought",
@@ -464,7 +464,7 @@ query {
 For example, to inject `SomethingIDidInMyAdapter` in the `operationWrapperTemplate` method.
 
 ```js
-import { gqlQuery } from 'gql-query-builder'
+import { gqlQuery } from 'gql-payload'
 import MyQueryAdapter from 'where/adapters/live/MyQueryAdapter'
 
 const query = gqlQuery({
@@ -491,7 +491,7 @@ Take a peek at [DefaultQueryAdapter](src/adapters/DefaultQueryAdapter.ts) to get
 #### Mutation:
 
 ```js
-import { gqlMutation } from 'gql-query-builder'
+import { gqlMutation } from 'gql-payload'
 
 const query = gqlMutation({
   operation: 'thoughtCreate',
@@ -523,7 +523,7 @@ mutation ($name: String, $thought: String) {
 #### Mutation (with required variables):
 
 ```js
-import { gqlMutation } from 'gql-query-builder'
+import { gqlMutation } from 'gql-payload'
 
 const query = gqlMutation({
   operation: 'userSignup',
@@ -557,7 +557,7 @@ mutation ($name: String, $email: String!, $password: String!) {
 #### Mutation (with custom types):
 
 ```js
-import { gqlMutation } from 'gql-query-builder'
+import { gqlMutation } from 'gql-payload'
 
 const query = gqlMutation({
   operation: "userPhoneNumber",
@@ -595,7 +595,7 @@ mutation ($phone: PhoneNumber!) {
 For example, to inject `SomethingIDidInMyAdapter` in the `operationWrapperTemplate` method.
 
 ```js
-import { gqlMutation } from 'gql-query-builder'
+import { gqlMutation } from 'gql-payload'
 import MyMutationAdapter from 'where/adapters/live/MyQueryAdapter'
 
 const query = gqlMutation({
@@ -622,7 +622,7 @@ Take a peek at [DefaultMutationAdapter](src/adapters/DefaultMutationAdapter.ts) 
 #### Mutation (with operation name):
 
 ```js
-import { gqlMutation } from 'gql-query-builder'
+import { gqlMutation } from 'gql-payload'
 
 const query = gqlMutation({
   operation: 'thoughts',
@@ -649,7 +649,7 @@ mutation someoperation {
 
 ```js
 import axios from "axios";
-import { gqlSubscription } from 'gql-query-builder'
+import { gqlSubscription } from 'gql-payload'
 
 async function saveThought() {
   try {
@@ -679,7 +679,7 @@ async function saveThought() {
 For example, to inject `SomethingIDidInMyAdapter` in the `operationWrapperTemplate` method.
 
 ```js
-import { gqlSubscription } from 'gql-query-builder'
+import { gqlSubscription } from 'gql-payload'
 import MySubscriptionAdapter from 'where/adapters/live/MyQueryAdapter'
 
 const query = gqlSubscription({
@@ -709,7 +709,7 @@ Take a peek at [DefaultSubscriptionAdapter](src/adapters/DefaultSubscriptionAdap
 
 ```js
 import axios from "axios";
-import { gqlQuery } from 'gql-query-builder'
+import { gqlQuery } from 'gql-payload'
 
 async function getThoughts() {
   try {
@@ -734,7 +734,7 @@ async function getThoughts() {
 
 ```js
 import axios from "axios";
-import { gqlMutation } from 'gql-query-builder'
+import { gqlMutation } from 'gql-payload'
 
 async function saveThought() {
   try {

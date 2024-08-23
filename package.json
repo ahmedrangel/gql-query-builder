@@ -1,11 +1,11 @@
 {
-  "name": "gql-query-builder",
-  "version": "3.8.0",
-  "description": "Simple GraphQL Query Builder",
+  "name": "gql-payload",
+  "version": "1.0.0",
+  "description": "Simple GraphQL Payload Builder",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com:ahmedrangel/gql-query-builder.git"
+    "url": "git+https://github.com:ahmedrangel/gql-payload.git"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -21,8 +21,11 @@
   "keywords": [
     "graphql",
     "query",
+    "payload",
+    "body",
     "builder",
-    "javascript"
+    "generator",
+    "gql"
   ],
   "author": {
     "name": "Ahmed Rangel",
@@ -31,9 +34,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ahmedrangel/gql-query-builder/issues"
+    "url": "https://github.com/ahmedrangel/gql-payload/issues"
   },
-  "homepage": "https://github.com/ahmedrangel/gql-query-builder",
+  "homepage": "https://github.com/ahmedrangel/gql-payload",
   "devDependencies": {
     "@stylistic/eslint-plugin": "^2.6.4",
     "@types/jest": "^29.5.12",

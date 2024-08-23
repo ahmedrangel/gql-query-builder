@@ -41,7 +41,7 @@ importers:
 
   playground:
     dependencies:
-      gql-query-builder:
+      gql-payload:
         specifier: workspace:*
         version: link:..
 

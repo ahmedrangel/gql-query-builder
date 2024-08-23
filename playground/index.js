@@ -1,5 +1,6 @@
-import { gqlQuery } from "gql-query-builder";
+import { gqlQuery } from "gql-payload";
 
+// Anilist API Reference https://anilist.github.io/ApiV2-GraphQL-Docs/
 const API = {
   BASE: "https://graphql.anilist.co"
 };
